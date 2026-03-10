@@ -1,6 +1,6 @@
 # Build artifacts
 bin/
-dist/
+/dist/
 *.exe
 cli
 
@@ -29,8 +29,12 @@ Icon
 .Spotlight-V100
 .Trashes
 
-# Wails build
-frontend/dist/
+# Wails build — ignore compiled frontend artifacts but keep the placeholder
+# that satisfies //go:embed all:frontend/dist during Go builds/tests.
+# Note: negation only works when the directory itself is not excluded,
+# so we ignore the contents (dist/*) rather than the directory (dist/).
+frontend/dist/*
+!frontend/dist/.gitkeep
 frontend/node_modules/
 
 # Go

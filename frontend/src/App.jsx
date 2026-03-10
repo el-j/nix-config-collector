@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Scan, Generate, Preview } from '../wailsjs/go/gui/App'
 
+const DEFAULT_OUTPUT_DIR = '~/.config/nixpkgs'
+
 function App() {
   const [scanResult, setScanResult] = useState(null)
   const [darwinConfig, setDarwinConfig] = useState('')
@@ -9,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState('scan')
+  const [outputDir, setOutputDir] = useState(DEFAULT_OUTPUT_DIR)
 
   const handleScan = async () => {
     setLoading(true)
@@ -43,8 +46,7 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      await Generate(window.__OUTPUT_DIR__ || '~/.config/nixpkgs')
-      setError(null)
+      await Generate(outputDir)
     } catch (e) {
       setError(String(e))
     } finally {
@@ -57,7 +59,7 @@ function App() {
       <h1 style={{ color: '#2d5a8e' }}>🔧 nix-config-collector</h1>
       <p>Scan your macOS system and generate Nix configuration files.</p>
 
-      <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center' }}>
         <button onClick={handleScan} disabled={loading} style={btnStyle('#2d5a8e')}>
           {loading ? '⏳ Scanning…' : '🔍 Scan System'}
         </button>
@@ -67,6 +69,17 @@ function App() {
         <button onClick={handleGenerate} disabled={loading || !darwinConfig} style={btnStyle('#c62828')}>
           💾 Write Config Files
         </button>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
+        <label htmlFor="outputDir" style={{ fontWeight: 'bold', fontSize: 13 }}>Output directory:</label>
+        <input
+          id="outputDir"
+          type="text"
+          value={outputDir}
+          onChange={e => setOutputDir(e.target.value)}
+          style={{ flex: 1, padding: '6px 10px', border: '1px solid #ccc', borderRadius: 4, fontSize: 13 }}
+        />
       </div>
 
       {error && (

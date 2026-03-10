@@ -5,7 +5,7 @@ class NixConfigCollector < Formula
   desc "Collect macOS setup and generate nix-darwin + home-manager configuration"
   homepage "https://el-j.github.io/nix-config-collector"
   url "https://github.com/el-j/nix-config-collector/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000" # update on release
+  sha256 "PLACEHOLDER_UPDATE_SHA256_ON_RELEASE" # TODO: replace with `sha256sum v0.1.0.tar.gz` value at release time
   license "MIT"
   head "https://github.com/el-j/nix-config-collector.git", branch: "main"
 

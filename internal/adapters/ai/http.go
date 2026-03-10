@@ -63,6 +63,10 @@ func claudeHTTPComplete(ctx context.Context, apiKey, model, prompt string) (stri
 		return "", fmt.Errorf("reading response: %w", err)
 	}
 
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("Claude API returned status %d: %s", resp.StatusCode, string(respBytes))
+	}
+
 	var claudeResp claudeResponse
 	if err := json.Unmarshal(respBytes, &claudeResp); err != nil {
 		return "", fmt.Errorf("parsing response: %w", err)
@@ -70,10 +74,6 @@ func claudeHTTPComplete(ctx context.Context, apiKey, model, prompt string) (stri
 
 	if claudeResp.Error != nil {
 		return "", fmt.Errorf("Claude API error (%s): %s", claudeResp.Error.Type, claudeResp.Error.Message)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Claude API returned status %d: %s", resp.StatusCode, string(respBytes))
 	}
 
 	for _, block := range claudeResp.Content {

@@ -3,6 +3,7 @@ package git_test
 import (
 	"context"
 	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/el-j/nix-config-collector/internal/adapters/git"
@@ -58,16 +59,14 @@ func TestAddAll_And_Commit(t *testing.T) {
 		t.Fatalf("Init() error: %v", err)
 	}
 
-	// Configure git identity for the test repo
-	configCmd := func(key, val string) {
-		adapter := git.New(dir)
-		_ = adapter // just ensure the init works
-		// We use the run method indirectly via Init/AddAll/Commit
-		_ = key
-		_ = val
+	// Best-effort git identity configuration so commits can succeed in CI.
+	for _, args := range [][2]string{
+		{"user.email", "test@example.com"},
+		{"user.name", "Test User"},
+	} {
+		//nolint:gosec // args are hardcoded strings
+		_ = exec.Command("git", "-C", dir, "config", args[0], args[1]).Run()
 	}
-	configCmd("user.email", "test@example.com")
-	configCmd("user.name", "Test")
 
 	// Write a test file
 	if err := os.WriteFile(dir+"/test.txt", []byte("hello"), 0600); err != nil {

@@ -1,12 +1,12 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-10T20:40:00.000Z",
+  "updatedAt": "2026-03-10T21:26:00.000Z",
   "counters": {
-    "nextTaskId": 28,
-    "nextPlanId": 5
+    "nextTaskId": 30,
+    "nextPlanId": 6
   },
   "activePlanId": null,
-  "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere.",
+  "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere. PLAN-005 done: Added Wails desktop build jobs to build.yml and release.yml. Desktop artifacts (darwin/amd64 + darwin/arm64 zipped .app bundles) now produced on every CI run and included in releases.",
   "plans": {
     "PLAN-001": {
       "id": "PLAN-001",
@@ -85,6 +85,20 @@
         "TASK-019"
       ],
       "createdAt": "2026-03-10T18:22:59.000Z"
+    },
+    "PLAN-005": {
+      "id": "PLAN-005",
+      "goal": "Add Wails desktop build jobs to build.yml and release.yml so GitHub Actions produces desktop app artifacts alongside CLI binaries.",
+      "status": "done",
+      "taskIds": [
+        "TASK-028",
+        "TASK-029"
+      ],
+      "criticalPath": [
+        "TASK-028",
+        "TASK-029"
+      ],
+      "createdAt": "2026-03-10T21:23:00.000Z"
     }
   },
   "tasks": {
@@ -682,6 +696,44 @@
       "buildStatus": "pass",
       "testStatus": "pass",
       "notes": "go build ./... pass. go test -race ./...: 11/11 pass. go vet ./... pass. Code review issues fixed. PLAN-003 archived."
+    },
+    "TASK-028": {
+      "id": "TASK-028",
+      "planId": "PLAN-005",
+      "title": "Add build-desktop job to build.yml for CI artifact generation",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T21:23:00.000Z",
+      "startedAt": "2026-03-10T21:23:00.000Z",
+      "completedAt": "2026-03-10T21:25:00.000Z",
+      "filesChanged": [
+        ".github/workflows/build.yml"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "Added build-desktop job with macos-13/amd64 and macos-latest/arm64 matrix. Installs Wails CLI, builds .app bundle, zips and uploads as artifact with 14-day retention. Also fixed CLI matrix to use macos-13 for amd64 (native) and macos-latest for arm64 (native)."
+    },
+    "TASK-029": {
+      "id": "TASK-029",
+      "planId": "PLAN-005",
+      "title": "Add build-desktop job to release.yml and include desktop zips in GitHub Release",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [
+        "TASK-028"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T21:23:00.000Z",
+      "startedAt": "2026-03-10T21:23:00.000Z",
+      "completedAt": "2026-03-10T21:26:00.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "Added build-desktop job needing validate+test. Release job now downloads both binary-* and desktop-* artifacts, includes desktop zips in SHA256SUMS and GitHub Release assets. CLI matrix also updated to use native macOS runners (macos-13/amd64, macos-latest/arm64)."
     }
   }
 }

@@ -16,7 +16,7 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: arm64
-          - os: macos-latest
+          - os: macos-13
             goos: darwin
             goarch: amd64
           - os: macos-latest
@@ -31,7 +31,7 @@ jobs:
         with:
           go-version: '1.24'
           cache: true
-      - name: Build
+      - name: Build CLI
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -41,4 +41,46 @@ jobs:
         with:
           name: nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
           path: nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
+          retention-days: 14
+
+  build-desktop:
+    strategy:
+      matrix:
+        include:
+          - os: macos-13
+            platform: darwin/amd64
+            arch: amd64
+          - os: macos-latest
+            platform: darwin/arm64
+            arch: arm64
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+
+      - name: Build desktop app
+        run: wails build -platform ${{ matrix.platform }}
+
+      - name: Package app bundle
+        run: |
+          cd build/bin
+          zip -r "../../nix-config-collector-desktop-darwin-${{ matrix.arch }}.zip" "nix-config-collector.app"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nix-config-collector-desktop-darwin-${{ matrix.arch }}
+          path: nix-config-collector-desktop-darwin-${{ matrix.arch }}.zip
           retention-days: 14

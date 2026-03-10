@@ -1,40 +1,70 @@
 # Creating a New Task
 
+All task state lives in a single file: **`.claude/orchestrator.json`**.
+
 ## Steps
-1. Determine the next task ID from the registry in `orchestrator.md`
-2. Create a new file `tasks/active/TASK-NNN.md` using the template below
-3. Add an entry to the task registry table in `orchestrator.md`
 
-## Task File Template
+1. Open `.claude/orchestrator.json`.
+2. Read `counters.nextTaskId` to get the next numeric ID (e.g. `3` → `TASK-003`).
+3. Read `counters.nextPlanId` to get the next plan ID if you are also creating a new plan (e.g. `2` → `PLAN-002`).
+4. Add the new task object to the `tasks` map using the template below.
+5. If the task belongs to a new plan, add a plan object to the `plans` map and set `activePlanId`.
+6. If the task belongs to an existing plan, append its ID to that plan's `taskIds` array.
+7. Increment `counters.nextTaskId` (and `counters.nextPlanId` if a new plan was created).
+8. Update `updatedAt` to the current ISO 8601 timestamp.
 
-```markdown
-# TASK-NNN: <Title>
+## Task Object Template
 
-## Metadata
-- **ID**: TASK-NNN
-- **Status**: pending
-- **Priority**: medium
-- **Dependencies**: none
-- **Assigned Agent**: unassigned
-- **Created**: YYYY-MM-DD
-- **Updated**: YYYY-MM-DD
-
-## Description
-<Detailed description of what needs to be done>
-
-## Acceptance Criteria
-- [ ] Criterion 1
-- [ ] Criterion 2
-
-## Notes
-<Any additional context or notes>
+```json
+"TASK-NNN": {
+  "id": "TASK-NNN",
+  "planId": "PLAN-NNN",
+  "title": "<Short, imperative title>",
+  "status": "todo",
+  "priority": "medium",
+  "dependencies": [],
+  "estimatedEffort": "M",
+  "createdAt": "YYYY-MM-DDTHH:MM:SS.000Z",
+  "startedAt": null,
+  "completedAt": null,
+  "filesChanged": [],
+  "buildStatus": null,
+  "testStatus": null,
+  "notes": ""
+}
 ```
 
-## Field Descriptions
-- **ID**: Unique task identifier (TASK-NNN format)
-- **Status**: Current state: `pending`, `in-progress`, `done`, `blocked`
-- **Priority**: `critical`, `high`, `medium`, `low`
-- **Dependencies**: List of TASK-NNN IDs this task depends on, or `none`
-- **Assigned Agent**: Agent type: `general-purpose`, `explore`, `task`, or specific agent name
-- **Created**: ISO date when task was created
-- **Updated**: ISO date when task was last modified
+## Plan Object Template
+
+```json
+"PLAN-NNN": {
+  "id": "PLAN-NNN",
+  "goal": "<One-sentence description of what this plan achieves>",
+  "status": "in-progress",
+  "taskIds": ["TASK-NNN"],
+  "criticalPath": ["TASK-NNN"],
+  "createdAt": "YYYY-MM-DDTHH:MM:SS.000Z"
+}
+```
+
+## Field Reference
+
+### Task fields
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `id` | string | ✅ | `TASK-NNN` (zero-padded, 3+ digits) |
+| `planId` | string | ✅ | Parent plan ID |
+| `title` | string | ✅ | Imperative phrase, ≤ 80 chars |
+| `status` | string | ✅ | `todo` · `in-progress` · `done` · `blocked` · `deferred` |
+| `priority` | string | ✅ | `critical` · `high` · `medium` · `low` |
+| `dependencies` | string[] | ✅ | `[]` if none |
+| `estimatedEffort` | string | ✅ | `XS` · `S` · `M` · `L` · `XL` |
+| `createdAt` | ISO string | ✅ | |
+| `startedAt` | ISO string \| null | ✅ | Set when status → `in-progress` |
+| `completedAt` | ISO string \| null | ✅ | Set when status → `done` |
+| `filesChanged` | string[] | ✅ | Relative repo paths; fill after completion |
+| `buildStatus` | string \| null | ✅ | `pass` · `fail` · `n/a` · `null` |
+| `testStatus` | string \| null | ✅ | `pass` · `fail` · `n/a` · `null` |
+| `notes` | string | ✅ | Any extra context; use `""` if empty |
+| `role` | string | ❌ | Optional agent role hint (e.g. `frontend`, `qa`, `verify`) |
+| `deferralReason` | string | ❌ | Required when `status` is `deferred` |

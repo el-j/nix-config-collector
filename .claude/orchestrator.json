@@ -1,0 +1,82 @@
+{
+  "version": "2",
+  "updatedAt": "2026-03-10T16:48:10.000Z",
+  "counters": {
+    "nextTaskId": 3,
+    "nextPlanId": 2
+  },
+  "activePlanId": "PLAN-001",
+  "notes": "Initial project orchestration state. PLAN-001 covers full project scaffolding.",
+  "plans": {
+    "PLAN-001": {
+      "id": "PLAN-001",
+      "goal": "Scaffold the nix-config-collector project: Go module with hexagonal architecture, macOS scanner, mapping engine, Nix config generator, CLI, GitHub Actions CI/CD, and GitHub Pages docs.",
+      "status": "in-progress",
+      "taskIds": ["TASK-001", "TASK-002"],
+      "criticalPath": ["TASK-001", "TASK-002"],
+      "createdAt": "2026-03-10T16:48:10.000Z"
+    }
+  },
+  "tasks": {
+    "TASK-001": {
+      "id": "TASK-001",
+      "planId": "PLAN-001",
+      "title": "Initial project scaffolding: Go module, hexagonal architecture, CLI, adapters, tests, CI/CD, docs",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "XL",
+      "createdAt": "2026-03-10T16:48:10.000Z",
+      "startedAt": "2026-03-10T16:48:10.000Z",
+      "completedAt": "2026-03-10T16:48:10.000Z",
+      "filesChanged": [
+        "go.mod",
+        "go.sum",
+        "cmd/cli/main.go",
+        "internal/core/models/models.go",
+        "internal/core/models/models_test.go",
+        "internal/core/ports/ports.go",
+        "internal/core/mapper/mapper.go",
+        "internal/core/mapper/mapper_test.go",
+        "internal/core/generator/generator.go",
+        "internal/core/generator/generator_test.go",
+        "internal/core/app/service.go",
+        "internal/adapters/macos/scanner.go",
+        "internal/adapters/fs/writer.go",
+        "internal/adapters/fs/writer_test.go",
+        "internal/adapters/cli/notifier.go",
+        "internal/adapters/cli/notifier_test.go",
+        ".github/workflows/test.yml",
+        ".github/workflows/build.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/docs.yml",
+        "docs/index.md",
+        "README.md"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "All packages compile cleanly. All tests pass. CodeQL: 0 alerts."
+    },
+    "TASK-002": {
+      "id": "TASK-002",
+      "planId": "PLAN-001",
+      "title": "Migrate orchestration system from markdown files to orchestrator.json",
+      "status": "done",
+      "priority": "high",
+      "dependencies": ["TASK-001"],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T16:48:10.000Z",
+      "startedAt": "2026-03-10T16:48:10.000Z",
+      "completedAt": "2026-03-10T16:48:10.000Z",
+      "filesChanged": [
+        ".claude/orchestrator.json",
+        ".claude/commands/new-task.md",
+        ".claude/commands/execute-task.md",
+        ".claude/commands/archive.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Replaced orchestrator.md + tasks/ directory with a single structured JSON file."
+    }
+  }
+}

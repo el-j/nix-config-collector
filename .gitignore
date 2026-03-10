@@ -1,0 +1,40 @@
+# Build artifacts
+bin/
+dist/
+*.exe
+
+# Test artifacts
+coverage.out
+coverage.html
+
+# Nix
+result
+result-*
+.direnv/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# Wails build
+frontend/dist/
+frontend/node_modules/
+
+# Go
+vendor/
+
+# Scan output (don't commit)
+scan.json
+*.scan.json

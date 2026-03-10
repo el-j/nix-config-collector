@@ -1,0 +1,501 @@
+{
+  "version": "2",
+  "updatedAt": "2026-03-10T18:22:59.000Z",
+  "counters": {
+    "nextTaskId": 20,
+    "nextPlanId": 4
+  },
+  "activePlanId": null,
+  "notes": "PLAN-001/002 archived. PLAN-003 complete. All 11 Go test packages pass. Vue3+PrimeVue4+TailwindCSS4 frontend, MAS AppID fix, beautiful HTML docs, modern CLI, improved CI.",
+  "plans": {
+    "PLAN-001": {
+      "id": "PLAN-001",
+      "goal": "Scaffold the nix-config-collector project: Go module with hexagonal architecture, macOS scanner, mapping engine, Nix config generator, CLI, GitHub Actions CI/CD, and GitHub Pages docs.",
+      "status": "done",
+      "taskIds": [
+        "TASK-001",
+        "TASK-002"
+      ],
+      "criticalPath": [
+        "TASK-001",
+        "TASK-002"
+      ],
+      "createdAt": "2026-03-10T16:48:10.000Z"
+    },
+    "PLAN-002": {
+      "id": "PLAN-002",
+      "goal": "Complete the full specification: pkg/config embedded templates, comprehensive tests (scanner + service mocks), git adapter, Claude AI adapter stub, Wails 2 desktop app scaffold, apply CLI command, .gitignore, enriched GitHub Pages docs site, Homebrew tap formula.",
+      "status": "done",
+      "taskIds": [
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009",
+        "TASK-010",
+        "TASK-011",
+        "TASK-012",
+        "TASK-013"
+      ],
+      "criticalPath": [
+        "TASK-003",
+        "TASK-005",
+        "TASK-013"
+      ],
+      "createdAt": "2026-03-10T17:30:59.000Z"
+    },
+    "PLAN-003": {
+      "id": "PLAN-003",
+      "goal": "Modernize: fix MAS App Store ID TODO, replace React with Vue3+PrimeVue4+TailwindCSS4, beautiful custom HTML docs site, CI artifact downloads, enhanced CLI output.",
+      "status": "done",
+      "taskIds": [
+        "TASK-014",
+        "TASK-015",
+        "TASK-016",
+        "TASK-017",
+        "TASK-018",
+        "TASK-019"
+      ],
+      "criticalPath": [
+        "TASK-014",
+        "TASK-015",
+        "TASK-019"
+      ],
+      "createdAt": "2026-03-10T18:22:59.000Z"
+    }
+  },
+  "tasks": {
+    "TASK-001": {
+      "id": "TASK-001",
+      "planId": "PLAN-001",
+      "title": "Initial project scaffolding: Go module, hexagonal architecture, CLI, adapters, tests, CI/CD, docs",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "XL",
+      "createdAt": "2026-03-10T16:48:10.000Z",
+      "startedAt": "2026-03-10T16:48:10.000Z",
+      "completedAt": "2026-03-10T16:48:10.000Z",
+      "filesChanged": [
+        "go.mod",
+        "go.sum",
+        "cmd/cli/main.go",
+        "internal/core/models/models.go",
+        "internal/core/models/models_test.go",
+        "internal/core/ports/ports.go",
+        "internal/core/mapper/mapper.go",
+        "internal/core/mapper/mapper_test.go",
+        "internal/core/generator/generator.go",
+        "internal/core/generator/generator_test.go",
+        "internal/core/app/service.go",
+        "internal/adapters/macos/scanner.go",
+        "internal/adapters/fs/writer.go",
+        "internal/adapters/fs/writer_test.go",
+        "internal/adapters/cli/notifier.go",
+        "internal/adapters/cli/notifier_test.go",
+        ".github/workflows/test.yml",
+        ".github/workflows/build.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/docs.yml",
+        "docs/index.md",
+        "README.md"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "All packages compile cleanly. All tests pass. CodeQL: 0 alerts."
+    },
+    "TASK-002": {
+      "id": "TASK-002",
+      "planId": "PLAN-001",
+      "title": "Migrate orchestration system from markdown files to orchestrator.json",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "TASK-001"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T16:48:10.000Z",
+      "startedAt": "2026-03-10T16:48:10.000Z",
+      "completedAt": "2026-03-10T16:48:10.000Z",
+      "filesChanged": [
+        ".claude/orchestrator.json",
+        ".claude/commands/new-task.md",
+        ".claude/commands/execute-task.md",
+        ".claude/commands/archive.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Replaced orchestrator.md + tasks/ directory with a single structured JSON file."
+    },
+    "TASK-003": {
+      "id": "TASK-003",
+      "planId": "PLAN-002",
+      "title": "Add pkg/config/ with embedded Nix config templates using go:embed",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "pkg/config/embed.go",
+        "pkg/config/embed_test.go",
+        "pkg/config/templates/darwin-configuration.nix.tmpl",
+        "pkg/config/templates/home.nix.tmpl",
+        "pkg/config/templates/flake.nix.tmpl"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Embedded templates via go:embed FS. ReadTemplate() helper. 2 tests pass."
+    },
+    "TASK-004": {
+      "id": "TASK-004",
+      "planId": "PLAN-002",
+      "title": "Add unit tests for macOS scanner adapter with exec.Command mocking",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "M",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "internal/adapters/macos/scanner_test.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "12 tests covering all scanner public methods. Linux-CI safe."
+    },
+    "TASK-005": {
+      "id": "TASK-005",
+      "planId": "PLAN-002",
+      "title": "Add app service integration tests with mock scanner, writer, notifier, generator",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "TASK-003"
+      ],
+      "estimatedEffort": "M",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "internal/core/app/service_test.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "6 integration tests with inline mocks for all 4 ports."
+    },
+    "TASK-006": {
+      "id": "TASK-006",
+      "planId": "PLAN-002",
+      "title": "Add internal/adapters/git/ adapter for auto-committing generated Nix configs",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "internal/adapters/git/git.go",
+        "internal/adapters/git/git_test.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "IsRepo, Init, AddAll, Commit, Tag, Push, CurrentBranch, CommitAndPush. Tests use temp dirs."
+    },
+    "TASK-007": {
+      "id": "TASK-007",
+      "planId": "PLAN-002",
+      "title": "Add internal/adapters/ai/ Claude Sonnet AI adapter (interface + no-op stub)",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "internal/adapters/ai/ai.go",
+        "internal/adapters/ai/http.go",
+        "internal/adapters/ai/ai_test.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Client interface, NoOpClient (ErrNoAPIKey), ClaudeClient (claude-sonnet-4-5, net/http only). 7 tests."
+    },
+    "TASK-008": {
+      "id": "TASK-008",
+      "planId": "PLAN-002",
+      "title": "Enhance GitHub Pages docs site: add proper HTML layout, download links, changelog",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "M",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "docs/_config.yml",
+        "docs/index.md",
+        "docs/changelog.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Jekyll Cayman theme. badges, install, usage, architecture, contributing. changelog.md added."
+    },
+    "TASK-009": {
+      "id": "TASK-009",
+      "planId": "PLAN-002",
+      "title": "Scaffold Wails 2 desktop app: cmd/wails/, wails.json, frontend/ React app, gui adapter",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "TASK-006",
+        "TASK-007"
+      ],
+      "estimatedEffort": "L",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "wails.json",
+        "cmd/wails/main.go",
+        "internal/adapters/gui/app.go",
+        "frontend/package.json",
+        "frontend/vite.config.js",
+        "frontend/index.html",
+        "frontend/src/main.jsx",
+        "frontend/src/App.jsx",
+        "frontend/src/index.css",
+        "Makefile"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "//go:build wails tags exclude Wails files from normal go build. React+Vite frontend with scan/preview/generate UI."
+    },
+    "TASK-010": {
+      "id": "TASK-010",
+      "planId": "PLAN-002",
+      "title": "Improve README.md: badges, full usage guide, architecture diagram, contributing guide",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "README.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Rewritten: CI/release badges, architecture, data flow, command ref, contributing."
+    },
+    "TASK-011": {
+      "id": "TASK-011",
+      "planId": "PLAN-002",
+      "title": "Add apply CLI command and .gitignore file",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "cmd/cli/main.go",
+        ".gitignore"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "apply command: generate + darwin-rebuild switch, --dry-run, tilde-expansion. .gitignore comprehensive."
+    },
+    "TASK-012": {
+      "id": "TASK-012",
+      "planId": "PLAN-002",
+      "title": "Add Homebrew tap formula for distribution (Formula/nix-config-collector.rb)",
+      "status": "done",
+      "priority": "low",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        "Formula/nix-config-collector.rb"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Standard Homebrew formula. SHA256 placeholder \u2014 update at release time."
+    },
+    "TASK-013": {
+      "id": "TASK-013",
+      "planId": "PLAN-002",
+      "title": "Final: verify build+tests pass, update orchestrator.json with results, archive PLAN-001",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009",
+        "TASK-010",
+        "TASK-011",
+        "TASK-012"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T17:30:59.000Z",
+      "startedAt": "2026-03-10T17:30:59.000Z",
+      "completedAt": "2026-03-10T17:30:59.000Z",
+      "filesChanged": [
+        ".claude/orchestrator.json"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "go build ./... pass. go test -race ./...: 11 packages all pass. PLAN-001 archived. PLAN-002 done."
+    },
+    "TASK-014": {
+      "id": "TASK-014",
+      "planId": "PLAN-003",
+      "title": "Fix MAS App Store ID: add AppID to Package model, scanner, generator template",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T18:22:59.000Z",
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "internal/core/models/models.go",
+        "internal/adapters/macos/scanner.go",
+        "internal/adapters/macos/scanner_mas_test.go",
+        "internal/core/generator/generator.go",
+        "internal/core/generator/generator_test.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Added AppID to Package; scanner captures it; generator emits real ID; tests verify both paths. TODO removed."
+    },
+    "TASK-015": {
+      "id": "TASK-015",
+      "planId": "PLAN-003",
+      "title": "Replace React frontend with Vue3 + PrimeVue 4 + TailwindCSS 4 desktop app",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "L",
+      "createdAt": "2026-03-10T18:22:59.000Z",
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "frontend/package.json",
+        "frontend/vite.config.js",
+        "frontend/index.html",
+        "frontend/public/nix.svg",
+        "frontend/src/main.js",
+        "frontend/src/style.css",
+        "frontend/src/App.vue",
+        "wails.json"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "React deleted; Vue3+PrimeVue4+TailwindCSS4; Stepper wizard Scan\u2192Preview\u2192Write; dark Aura theme; stats dashboard."
+    },
+    "TASK-016": {
+      "id": "TASK-016",
+      "planId": "PLAN-003",
+      "title": "Replace Jekyll docs with beautiful custom HTML/CSS GitHub Pages site",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "M",
+      "createdAt": "2026-03-10T18:22:59.000Z",
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "docs/index.html",
+        "docs/.nojekyll",
+        "docs/_config.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Beautiful dark-mode standalone HTML page; hero, download buttons, 3-step how-it-works, feature grid, architecture, CLI ref, CI badges."
+    },
+    "TASK-017": {
+      "id": "TASK-017",
+      "planId": "PLAN-003",
+      "title": "Improve GitHub Actions: release checksums, docs workflow triggers, PR summary",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [
+        "TASK-016"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T18:22:59.000Z",
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml",
+        ".github/workflows/docs.yml",
+        ".github/workflows/build.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "release.yml: SHA256 checksums, version injection. docs.yml: triggers on release+push, configure-pages@v5. build.yml: retention-days."
+    },
+    "TASK-018": {
+      "id": "TASK-018",
+      "planId": "PLAN-003",
+      "title": "Enhance CLI notifier with modern progress bar and scan summary table",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T18:22:59.000Z",
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "internal/adapters/cli/notifier.go",
+        "internal/adapters/cli/notifier_test.go",
+        "cmd/cli/main.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Progress bar \u2593\u2591 with \\r in-place update; box-drawing scan summary table; PrintScanSummary called in scanCmd; Confirm handles stdin error."
+    },
+    "TASK-019": {
+      "id": "TASK-019",
+      "planId": "PLAN-003",
+      "title": "Final verification: build+tests pass, update orchestrator, archive PLAN-003",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [
+        "TASK-014",
+        "TASK-015",
+        "TASK-016",
+        "TASK-017",
+        "TASK-018"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T18:22:59.000Z",
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "internal/adapters/macos/scanner_mas_test.go",
+        "internal/adapters/cli/notifier.go",
+        ".claude/orchestrator.json"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "go build ./... pass. go test -race ./...: 11/11 pass. go vet ./... pass. Code review issues fixed. PLAN-003 archived."
+    }
+  }
+}

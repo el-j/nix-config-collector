@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+      - name: Build
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          go build -ldflags="-s -w" -o nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/cli/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
+          retention-days: 14

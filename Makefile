@@ -1,8 +1,11 @@
-.PHONY: build build-wails test lint clean
+.PHONY: build build-wails test lint clean install build-all
+
+# Version — override with: make build VERSION=1.2.3
+VERSION ?= dev
 
 # Default target: build CLI
 build:
-	go build -ldflags="-s -w" -o bin/nix-config-collector ./cmd/cli/
+	go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/nix-config-collector ./cmd/cli/
 
 # Build Wails desktop app (requires Wails CLI and macOS)
 build-wails:
@@ -26,6 +29,8 @@ install: build
 
 # Cross-compile for all platforms
 build-all:
-	GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/nix-config-collector-darwin-arm64 ./cmd/cli/
-	GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/nix-config-collector-darwin-amd64 ./cmd/cli/
-	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dist/nix-config-collector-linux-amd64 ./cmd/cli/
+	mkdir -p dist
+	GOOS=darwin  GOARCH=arm64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o dist/nix-config-collector-darwin-arm64  ./cmd/cli/
+	GOOS=darwin  GOARCH=amd64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o dist/nix-config-collector-darwin-amd64  ./cmd/cli/
+	GOOS=linux   GOARCH=amd64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o dist/nix-config-collector-linux-amd64   ./cmd/cli/
+	GOOS=linux   GOARCH=arm64 go build -ldflags="-s -w -X main.version=$(VERSION)" -o dist/nix-config-collector-linux-arm64   ./cmd/cli/

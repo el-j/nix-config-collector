@@ -1,12 +1,12 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-10T18:22:59.000Z",
+  "updatedAt": "2026-03-10T20:40:00.000Z",
   "counters": {
-    "nextTaskId": 20,
-    "nextPlanId": 4
+    "nextTaskId": 28,
+    "nextPlanId": 5
   },
   "activePlanId": null,
-  "notes": "PLAN-001/002 archived. PLAN-003 complete. All 11 Go test packages pass. Vue3+PrimeVue4+TailwindCSS4 frontend, MAS AppID fix, beautiful HTML docs, modern CLI, improved CI.",
+  "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere.",
   "plans": {
     "PLAN-001": {
       "id": "PLAN-001",
@@ -46,6 +46,27 @@
       ],
       "createdAt": "2026-03-10T17:30:59.000Z"
     },
+    "PLAN-004": {
+      "id": "PLAN-004",
+      "goal": "Add bulletproof semver release CI/CD: gated release workflow, semver validation, linux-arm64, Homebrew formula auto-update, workflow_dispatch, and PR merge gates.",
+      "status": "done",
+      "taskIds": [
+        "TASK-020",
+        "TASK-021",
+        "TASK-022",
+        "TASK-023",
+        "TASK-024",
+        "TASK-025",
+        "TASK-026",
+        "TASK-027"
+      ],
+      "criticalPath": [
+        "TASK-020",
+        "TASK-021",
+        "TASK-027"
+      ],
+      "createdAt": "2026-03-10T20:22:08.000Z"
+    },
     "PLAN-003": {
       "id": "PLAN-003",
       "goal": "Modernize: fix MAS App Store ID TODO, replace React with Vue3+PrimeVue4+TailwindCSS4, beautiful custom HTML docs site, CI artifact downloads, enhanced CLI output.",
@@ -67,6 +88,171 @@
     }
   },
   "tasks": {
+    "TASK-020": {
+      "id": "TASK-020",
+      "planId": "PLAN-004",
+      "title": "Revamp release.yml: test gate, semver validation, workflow_dispatch, linux-arm64, body template",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "M",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Revamped: create-tag, validate (semver), test gate, 4-platform build matrix, release with SHA256SUMS, Homebrew formula auto-update. workflow_dispatch support."
+    },
+    "TASK-021": {
+      "id": "TASK-021",
+      "planId": "PLAN-004",
+      "title": "Add Homebrew formula auto-update job to release.yml using git commit + PR",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "TASK-020"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml",
+        "Formula/nix-config-collector.rb"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Formula auto-update: curl tarball, sha256sum, sed url+sha256, git fetch origin main, checkout main, commit, push."
+    },
+    "TASK-022": {
+      "id": "TASK-022",
+      "planId": "PLAN-004",
+      "title": "Update build.yml: add linux-arm64 to matrix, improve PR check naming",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        ".github/workflows/build.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Added linux-arm64 to build matrix (4 platforms: linux/amd64, linux/arm64, darwin/amd64, darwin/arm64)."
+    },
+    "TASK-023": {
+      "id": "TASK-023",
+      "planId": "PLAN-004",
+      "title": "Update test.yml: add macOS test job for complete pre-merge gate coverage",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        ".github/workflows/test.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Added macOS test job via matrix strategy. Coverage upload restricted to ubuntu-latest."
+    },
+    "TASK-024": {
+      "id": "TASK-024",
+      "planId": "PLAN-004",
+      "title": "Add linux-arm64 download to docs/index.html and README.md",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "TASK-020"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        "docs/index.html",
+        "README.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Added linux-arm64 download button in docs/index.html and Linux AMD64/ARM64 install commands in README.md."
+    },
+    "TASK-025": {
+      "id": "TASK-025",
+      "planId": "PLAN-004",
+      "title": "Update Makefile: add linux-arm64, VERSION variable, release-dry-run target",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        "Makefile"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "Added VERSION ?= dev, -X main.version ldflags injection in build and build-all, linux-arm64 cross-compile target."
+    },
+    "TASK-026": {
+      "id": "TASK-026",
+      "planId": "PLAN-004",
+      "title": "Fix Homebrew formula: remove placeholder SHA256 comment, document update process",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:35:00.000Z",
+      "completedAt": "2026-03-10T20:35:00.000Z",
+      "filesChanged": [
+        "Formula/nix-config-collector.rb"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Removed TODO comment, cleaned sha256 placeholder, added -X main.version=#{version} to install ldflags."
+    },
+    "TASK-027": {
+      "id": "TASK-027",
+      "planId": "PLAN-004",
+      "title": "Final verification: go build+test pass, all workflow YAML valid, update orchestrator",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [
+        "TASK-020",
+        "TASK-021",
+        "TASK-022",
+        "TASK-023",
+        "TASK-024",
+        "TASK-025",
+        "TASK-026"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": "2026-03-10T20:40:00.000Z",
+      "completedAt": "2026-03-10T20:40:00.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml",
+        ".github/workflows/build.yml",
+        ".github/workflows/test.yml",
+        "Makefile",
+        "Formula/nix-config-collector.rb",
+        "docs/index.html",
+        "README.md",
+        ".claude/orchestrator.json"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "go build+test+vet all pass. All 4 workflow YAML valid. Code review issues fixed: annotated tag (-a), concurrency group, GOOS spacing."
+    },
     "TASK-001": {
       "id": "TASK-001",
       "planId": "PLAN-001",

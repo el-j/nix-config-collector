@@ -2,6 +2,7 @@
 bin/
 dist/
 *.exe
+cli
 
 # Test artifacts
 coverage.out

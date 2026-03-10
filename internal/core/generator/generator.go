@@ -60,7 +60,7 @@ var darwinConfigTemplate = `# darwin-configuration.nix
     {{- if .MASApps }}
     masApps = {
       {{- range .MASApps }}
-      "{{ .Name }}" = 0; # TODO: add App Store ID
+      "{{ .Name }}" = {{ if .AppID }}{{ .AppID }}{{ else }}0{{ end }};
       {{- end }}
     };
     {{- end }}

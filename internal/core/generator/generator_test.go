@@ -66,6 +66,25 @@ func TestGenerateHomeConfig(t *testing.T) {
 	}
 }
 
+func TestGenerateDarwinConfig_MASAppsWithAppID(t *testing.T) {
+	g := generator.New()
+	scan := testScan()
+	scan.Packages = append(scan.Packages,
+		models.Package{Name: "Xcode", Version: "15.2", AppID: "497799835", Type: models.PackageTypeMAS},
+		models.Package{Name: "Keynote", Version: "13.2", AppID: "", Type: models.PackageTypeMAS},
+	)
+	config, err := g.GenerateDarwinConfig(scan)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !strings.Contains(config, `"Xcode" = 497799835;`) {
+		t.Errorf("expected Xcode with numeric App Store ID, got:\n%s", config)
+	}
+	if !strings.Contains(config, `"Keynote" = 0;`) {
+		t.Errorf("expected Keynote fallback to 0, got:\n%s", config)
+	}
+}
+
 func TestGenerateFlakeConfig(t *testing.T) {
 	g := generator.New()
 	config, err := g.GenerateFlakeConfig(testScan())

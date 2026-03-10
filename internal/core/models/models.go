@@ -17,6 +17,7 @@ type Package struct {
 	Name        string      `json:"name"`
 	Version     string      `json:"version,omitempty"`
 	Type        PackageType `json:"type"`
+	AppID       string      `json:"app_id,omitempty"` // Mac App Store numeric ID
 	NixName     string      `json:"nix_name,omitempty"`
 	Description string      `json:"description,omitempty"`
 }

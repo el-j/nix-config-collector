@@ -154,6 +154,7 @@ func (s *Scanner) scanMASApps(ctx context.Context) ([]models.Package, error) {
 		if len(parts) < 2 {
 			continue
 		}
+		appID := strings.TrimSpace(parts[0])
 		name := strings.TrimSpace(parts[1])
 		version := ""
 		if idx := strings.LastIndex(name, " ("); idx != -1 {
@@ -163,6 +164,7 @@ func (s *Scanner) scanMASApps(ctx context.Context) ([]models.Package, error) {
 		packages = append(packages, models.Package{
 			Name:    name,
 			Version: version,
+			AppID:   appID,
 			Type:    models.PackageTypeMAS,
 		})
 	}

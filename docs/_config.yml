@@ -1,0 +1,6 @@
+title: nix-config-collector
+description: Collect your macOS setup and generate a full Nix (nix-darwin + home-manager) configuration
+theme: jekyll-theme-cayman
+show_downloads: true
+github:
+  repo_name: el-j/nix-config-collector

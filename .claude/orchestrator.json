@@ -1,6 +1,6 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-10T17:30:59.000Z",
+  "updatedAt": "2026-03-10T17:54:41.000Z",
   "counters": {
     "nextTaskId": 14,
     "nextPlanId": 3
@@ -12,8 +12,14 @@
       "id": "PLAN-001",
       "goal": "Scaffold the nix-config-collector project: Go module with hexagonal architecture, macOS scanner, mapping engine, Nix config generator, CLI, GitHub Actions CI/CD, and GitHub Pages docs.",
       "status": "done",
-      "taskIds": ["TASK-001", "TASK-002"],
-      "criticalPath": ["TASK-001", "TASK-002"],
+      "taskIds": [
+        "TASK-001",
+        "TASK-002"
+      ],
+      "criticalPath": [
+        "TASK-001",
+        "TASK-002"
+      ],
       "createdAt": "2026-03-10T16:48:10.000Z"
     },
     "PLAN-002": {
@@ -21,11 +27,23 @@
       "goal": "Complete the full specification: pkg/config embedded templates, comprehensive tests (scanner + service mocks), git adapter, Claude AI adapter stub, Wails 2 desktop app scaffold, apply CLI command, .gitignore, enriched GitHub Pages docs site, Homebrew tap formula.",
       "status": "in-progress",
       "taskIds": [
-        "TASK-003", "TASK-004", "TASK-005", "TASK-006",
-        "TASK-007", "TASK-008", "TASK-009", "TASK-010",
-        "TASK-011", "TASK-012", "TASK-013"
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009",
+        "TASK-010",
+        "TASK-011",
+        "TASK-012",
+        "TASK-013"
       ],
-      "criticalPath": ["TASK-003", "TASK-005", "TASK-013"],
+      "criticalPath": [
+        "TASK-003",
+        "TASK-005",
+        "TASK-013"
+      ],
       "createdAt": "2026-03-10T17:30:59.000Z"
     }
   },
@@ -42,18 +60,28 @@
       "startedAt": "2026-03-10T16:48:10.000Z",
       "completedAt": "2026-03-10T16:48:10.000Z",
       "filesChanged": [
-        "go.mod", "go.sum", "cmd/cli/main.go",
-        "internal/core/models/models.go", "internal/core/models/models_test.go",
+        "go.mod",
+        "go.sum",
+        "cmd/cli/main.go",
+        "internal/core/models/models.go",
+        "internal/core/models/models_test.go",
         "internal/core/ports/ports.go",
-        "internal/core/mapper/mapper.go", "internal/core/mapper/mapper_test.go",
-        "internal/core/generator/generator.go", "internal/core/generator/generator_test.go",
+        "internal/core/mapper/mapper.go",
+        "internal/core/mapper/mapper_test.go",
+        "internal/core/generator/generator.go",
+        "internal/core/generator/generator_test.go",
         "internal/core/app/service.go",
         "internal/adapters/macos/scanner.go",
-        "internal/adapters/fs/writer.go", "internal/adapters/fs/writer_test.go",
-        "internal/adapters/cli/notifier.go", "internal/adapters/cli/notifier_test.go",
-        ".github/workflows/test.yml", ".github/workflows/build.yml",
-        ".github/workflows/release.yml", ".github/workflows/docs.yml",
-        "docs/index.md", "README.md"
+        "internal/adapters/fs/writer.go",
+        "internal/adapters/fs/writer_test.go",
+        "internal/adapters/cli/notifier.go",
+        "internal/adapters/cli/notifier_test.go",
+        ".github/workflows/test.yml",
+        ".github/workflows/build.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/docs.yml",
+        "docs/index.md",
+        "README.md"
       ],
       "buildStatus": "pass",
       "testStatus": "pass",
@@ -65,7 +93,9 @@
       "title": "Migrate orchestration system from markdown files to orchestrator.json",
       "status": "done",
       "priority": "high",
-      "dependencies": ["TASK-001"],
+      "dependencies": [
+        "TASK-001"
+      ],
       "estimatedEffort": "S",
       "createdAt": "2026-03-10T16:48:10.000Z",
       "startedAt": "2026-03-10T16:48:10.000Z",
@@ -118,7 +148,9 @@
       "title": "Add app service integration tests with mock scanner, writer, notifier, generator",
       "status": "in-progress",
       "priority": "high",
-      "dependencies": ["TASK-003"],
+      "dependencies": [
+        "TASK-003"
+      ],
       "estimatedEffort": "M",
       "createdAt": "2026-03-10T17:30:59.000Z",
       "startedAt": "2026-03-10T17:30:59.000Z",
@@ -180,17 +212,33 @@
       "id": "TASK-009",
       "planId": "PLAN-002",
       "title": "Scaffold Wails 2 desktop app: cmd/wails/, wails.json, frontend/ React app, gui adapter",
-      "status": "in-progress",
+      "status": "done",
       "priority": "high",
-      "dependencies": ["TASK-006", "TASK-007"],
+      "dependencies": [
+        "TASK-006",
+        "TASK-007"
+      ],
       "estimatedEffort": "L",
       "createdAt": "2026-03-10T17:30:59.000Z",
       "startedAt": "2026-03-10T17:30:59.000Z",
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": ""
+      "completedAt": "2026-03-10T17:54:41.000Z",
+      "filesChanged": [
+        "wails.json",
+        "Makefile",
+        "cmd/wails/main.go",
+        "internal/adapters/gui/app.go",
+        "frontend/package.json",
+        "frontend/vite.config.js",
+        "frontend/index.html",
+        "frontend/src/main.jsx",
+        "frontend/src/App.jsx",
+        "frontend/src/index.css",
+        "frontend/src/wailsjs/go/gui/App.js",
+        "frontend/src/wailsjs/runtime/runtime.js"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "Scaffolded Wails 2 desktop app. All Go files use //go:build wails tag; go build ./... passes on Linux CI. Frontend is React+Vite with Scan/Preview/Generate UI."
     },
     "TASK-010": {
       "id": "TASK-010",
@@ -247,9 +295,16 @@
       "status": "todo",
       "priority": "critical",
       "dependencies": [
-        "TASK-003","TASK-004","TASK-005","TASK-006",
-        "TASK-007","TASK-008","TASK-009","TASK-010",
-        "TASK-011","TASK-012"
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009",
+        "TASK-010",
+        "TASK-011",
+        "TASK-012"
       ],
       "estimatedEffort": "S",
       "createdAt": "2026-03-10T17:30:59.000Z",

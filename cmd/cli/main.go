@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
@@ -27,6 +29,7 @@ nix-darwin + home-manager configuration files.`,
 
 	rootCmd.AddCommand(scanCmd())
 	rootCmd.AddCommand(generateCmd())
+	rootCmd.AddCommand(applyCmd())
 	rootCmd.AddCommand(versionCmd())
 
 	if err := rootCmd.Execute(); err != nil {
@@ -113,6 +116,78 @@ func generateCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&outputDir, "output", "o", "", "Output directory for generated files")
+	return cmd
+}
+
+func applyCmd() *cobra.Command {
+	var outputDir string
+	var dryRun bool
+
+	cmd := &cobra.Command{
+		Use:   "apply",
+		Short: "Generate Nix configs and apply with darwin-rebuild",
+		Long: `Scans the macOS system, generates nix-darwin + home-manager configuration,
+and applies it using 'darwin-rebuild switch'.
+
+Requires Nix and nix-darwin to be installed.`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			notifier := cli.New()
+
+			// Expand ~ in output dir
+			if outputDir == "" {
+				home, err := os.UserHomeDir()
+				if err != nil {
+					return fmt.Errorf("getting home directory: %w", err)
+				}
+				outputDir = filepath.Join(home, ".config", "nixpkgs")
+			} else if len(outputDir) >= 2 && outputDir[:2] == "~/" {
+				home, err := os.UserHomeDir()
+				if err != nil {
+					return fmt.Errorf("getting home directory: %w", err)
+				}
+				outputDir = filepath.Join(home, outputDir[2:])
+			}
+
+			scanner := macos.New()
+			writer := fsadapter.New()
+			gen := generator.New()
+			svc := app.NewService(scanner, writer, notifier, gen)
+
+			ctx := context.Background()
+
+			notifier.Info(fmt.Sprintf("Generating Nix configs into %s ...", outputDir))
+			_, err := svc.Generate(ctx, app.GenerateOptions{OutputDir: outputDir})
+			if err != nil {
+				return fmt.Errorf("generation failed: %w", err)
+			}
+			notifier.Success("Nix configs generated successfully")
+
+			if dryRun {
+				notifier.Info("Dry-run mode: skipping darwin-rebuild")
+				return nil
+			}
+
+			hostname, err := os.Hostname()
+			if err != nil {
+				hostname = "default"
+			}
+
+			flakeArg := fmt.Sprintf("%s#%s", outputDir, hostname)
+			notifier.Info(fmt.Sprintf("Running: darwin-rebuild switch --flake %s", flakeArg))
+
+			darwinCmd := exec.CommandContext(ctx, "darwin-rebuild", "switch", "--flake", flakeArg)
+			darwinCmd.Stdout = os.Stdout
+			darwinCmd.Stderr = os.Stderr
+			if err := darwinCmd.Run(); err != nil {
+				return fmt.Errorf("darwin-rebuild failed: %w", err)
+			}
+			notifier.Success("Configuration applied successfully!")
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVarP(&outputDir, "output", "o", "", "Output directory (default: ~/.config/nixpkgs)")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Generate configs without applying")
 	return cmd
 }
 

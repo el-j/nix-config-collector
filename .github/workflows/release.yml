@@ -1,37 +1,206 @@
 name: Release
 
 on:
+  # Triggered automatically when a version tag is pushed
   push:
     tags:
       - 'v*'
+
+  # Allows manual release without leaving the GitHub UI.
+  # Provide the version as "1.2.3" (no "v" prefix); the workflow creates the tag.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (semver without v prefix, e.g. 1.2.3)'
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 jobs:
-  release:
+  # ─────────────────────────────────────────────────────────────
+  # When triggered manually, create and push the annotated tag so
+  # that the rest of the pipeline can reference it uniformly.
+  # ─────────────────────────────────────────────────────────────
+  create-tag:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push tag
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ inputs.version }}"
+          git push origin "v${{ inputs.version }}"
+
+  # ─────────────────────────────────────────────────────────────
+  # Validate that the tag carries a well-formed semver string and
+  # surface it as job outputs consumed by every downstream job.
+  # ─────────────────────────────────────────────────────────────
+  validate:
+    needs: [create-tag]
+    # `create-tag` is skipped on push events; make validate run in both cases.
+    if: always() && (needs.create-tag.result == 'success' || needs.create-tag.result == 'skipped')
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      tag:     ${{ steps.parse.outputs.tag }}
+    steps:
+      - name: Parse and validate version
+        id: parse
+        run: |
+          # Determine the raw version string
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            RAW_VERSION="${{ inputs.version }}"
+          else
+            # Strip the leading "v" from the tag name
+            RAW_VERSION="${GITHUB_REF_NAME#v}"
+          fi
+
+          # Validate strict semver (with optional pre-release and build metadata)
+          SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$'
+          if ! echo "$RAW_VERSION" | grep -qE "$SEMVER_RE"; then
+            echo "::error::Invalid semver: '$RAW_VERSION'. Expected format: MAJOR.MINOR.PATCH[-pre-release][+build]"
+            exit 1
+          fi
+
+          echo "version=${RAW_VERSION}"   >> "$GITHUB_OUTPUT"
+          echo "tag=v${RAW_VERSION}"      >> "$GITHUB_OUTPUT"
+
+  # ─────────────────────────────────────────────────────────────
+  # Gate the release on a clean test run.
+  # ─────────────────────────────────────────────────────────────
+  test:
+    needs: [validate]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
           cache: true
-      - name: Build for all platforms
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run tests
+        run: go test -v -race ./...
+
+  # ─────────────────────────────────────────────────────────────
+  # Cross-compile for all supported platforms in parallel.
+  # ─────────────────────────────────────────────────────────────
+  build:
+    needs: [validate, test]
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            goos: linux
+            goarch: amd64
+          - runner: ubuntu-latest
+            goos: linux
+            goarch: arm64
+          - runner: macos-latest
+            goos: darwin
+            goarch: amd64
+          - runner: macos-latest
+            goos: darwin
+            goarch: arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - name: Build binary
+        env:
+          GOOS:   ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
         run: |
           mkdir -p dist
-          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X main.version=${GITHUB_REF_NAME}" -o dist/nix-config-collector-darwin-amd64 ./cmd/cli/
-          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X main.version=${GITHUB_REF_NAME}" -o dist/nix-config-collector-darwin-arm64 ./cmd/cli/
-          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${GITHUB_REF_NAME}" -o dist/nix-config-collector-linux-amd64 ./cmd/cli/
-      - name: Generate checksums
-        working-directory: dist
-        run: sha256sum * > SHA256SUMS.txt
-      - name: Create Release
+          go build \
+            -ldflags="-s -w -X main.version=${{ needs.validate.outputs.version }}" \
+            -o "dist/nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}" \
+            ./cmd/cli/
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
+          if-no-files-found: error
+
+  # ─────────────────────────────────────────────────────────────
+  # Collect binaries, publish the GitHub Release, and keep the
+  # Homebrew formula in sync.
+  # ─────────────────────────────────────────────────────────────
+  release:
+    needs: [validate, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Collect every binary into dist/
+      - name: Download all binaries
+        uses: actions/download-artifact@v4
+        with:
+          pattern: binary-*
+          merge-multiple: true
+          path: dist/
+
+      # Generate a single checksums file covering all binaries
+      - name: Generate SHA256 checksums
+        run: cd dist && sha256sum * > SHA256SUMS.txt
+
+      # Publish the GitHub Release with all assets
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name:               ${{ needs.validate.outputs.tag }}
+          name:                   "nix-config-collector ${{ needs.validate.outputs.tag }}"
+          generate_release_notes: true
+          make_latest:            true
           files: |
+            dist/nix-config-collector-linux-amd64
+            dist/nix-config-collector-linux-arm64
             dist/nix-config-collector-darwin-amd64
             dist/nix-config-collector-darwin-arm64
-            dist/nix-config-collector-linux-amd64
             dist/SHA256SUMS.txt
-          generate_release_notes: true
+
+      # Keep Formula/nix-config-collector.rb pointing at the new release
+      - name: Update Homebrew formula
+        env:
+          TAG: ${{ needs.validate.outputs.tag }}
+        run: |
+          TARBALL_URL="https://github.com/el-j/nix-config-collector/archive/refs/tags/${TAG}.tar.gz"
+
+          # Compute the SHA256 of the source tarball that Homebrew will fetch
+          SHA256=$(curl -sL "${TARBALL_URL}" | sha256sum | awk '{print $1}')
+
+          # Patch the formula in-place
+          sed -i "s|url \".*\"|url \"${TARBALL_URL}\"|"   Formula/nix-config-collector.rb
+          sed -i "s|sha256 \".*\"|sha256 \"${SHA256}\"|"  Formula/nix-config-collector.rb
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/nix-config-collector.rb
+          git commit -m "chore: update Homebrew formula for ${TAG}"
+          git push origin HEAD:main

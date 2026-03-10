@@ -38,6 +38,14 @@ curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/ni
 # Intel Mac
 curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-darwin-amd64 \
   -o /usr/local/bin/nix-config-collector && chmod +x /usr/local/bin/nix-config-collector
+
+# Linux AMD64
+curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-linux-amd64 \
+  -o /usr/local/bin/nix-config-collector && chmod +x /usr/local/bin/nix-config-collector
+
+# Linux ARM64
+curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-linux-arm64 \
+  -o /usr/local/bin/nix-config-collector && chmod +x /usr/local/bin/nix-config-collector
 ```
 
 ### Build from source

@@ -1,12 +1,12 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-10T18:22:59.000Z",
+  "updatedAt": "2026-03-10T20:22:08.000Z",
   "counters": {
-    "nextTaskId": 20,
-    "nextPlanId": 4
+    "nextTaskId": 28,
+    "nextPlanId": 5
   },
-  "activePlanId": null,
-  "notes": "PLAN-001/002 archived. PLAN-003 complete. All 11 Go test packages pass. Vue3+PrimeVue4+TailwindCSS4 frontend, MAS AppID fix, beautiful HTML docs, modern CLI, improved CI.",
+  "activePlanId": "PLAN-004",
+  "notes": "PLAN-001/002 archived. PLAN-003 complete. All 11 Go test packages pass. Vue3+PrimeVue4+TailwindCSS4 frontend, MAS AppID fix, beautiful HTML docs, modern CLI, improved CI. PLAN-004 in-progress: bulletproof semver release CI/CD.",
   "plans": {
     "PLAN-001": {
       "id": "PLAN-001",
@@ -46,6 +46,27 @@
       ],
       "createdAt": "2026-03-10T17:30:59.000Z"
     },
+    "PLAN-004": {
+      "id": "PLAN-004",
+      "goal": "Add bulletproof semver release CI/CD: gated release workflow, semver validation, linux-arm64, Homebrew formula auto-update, workflow_dispatch, and PR merge gates.",
+      "status": "in-progress",
+      "taskIds": [
+        "TASK-020",
+        "TASK-021",
+        "TASK-022",
+        "TASK-023",
+        "TASK-024",
+        "TASK-025",
+        "TASK-026",
+        "TASK-027"
+      ],
+      "criticalPath": [
+        "TASK-020",
+        "TASK-021",
+        "TASK-027"
+      ],
+      "createdAt": "2026-03-10T20:22:08.000Z"
+    },
     "PLAN-003": {
       "id": "PLAN-003",
       "goal": "Modernize: fix MAS App Store ID TODO, replace React with Vue3+PrimeVue4+TailwindCSS4, beautiful custom HTML docs site, CI artifact downloads, enhanced CLI output.",
@@ -67,6 +88,134 @@
     }
   },
   "tasks": {
+    "TASK-020": {
+      "id": "TASK-020",
+      "planId": "PLAN-004",
+      "title": "Revamp release.yml: test gate, semver validation, workflow_dispatch, linux-arm64, body template",
+      "status": "todo",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "M",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-021": {
+      "id": "TASK-021",
+      "planId": "PLAN-004",
+      "title": "Add Homebrew formula auto-update job to release.yml using git commit + PR",
+      "status": "todo",
+      "priority": "high",
+      "dependencies": ["TASK-020"],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-022": {
+      "id": "TASK-022",
+      "planId": "PLAN-004",
+      "title": "Update build.yml: add linux-arm64 to matrix, improve PR check naming",
+      "status": "todo",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-023": {
+      "id": "TASK-023",
+      "planId": "PLAN-004",
+      "title": "Update test.yml: add macOS test job for complete pre-merge gate coverage",
+      "status": "todo",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-024": {
+      "id": "TASK-024",
+      "planId": "PLAN-004",
+      "title": "Add linux-arm64 download to docs/index.html and README.md",
+      "status": "todo",
+      "priority": "high",
+      "dependencies": ["TASK-020"],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-025": {
+      "id": "TASK-025",
+      "planId": "PLAN-004",
+      "title": "Update Makefile: add linux-arm64, VERSION variable, release-dry-run target",
+      "status": "todo",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-026": {
+      "id": "TASK-026",
+      "planId": "PLAN-004",
+      "title": "Fix Homebrew formula: remove placeholder SHA256 comment, document update process",
+      "status": "todo",
+      "priority": "medium",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
+    "TASK-027": {
+      "id": "TASK-027",
+      "planId": "PLAN-004",
+      "title": "Final verification: go build+test pass, all workflow YAML valid, update orchestrator",
+      "status": "todo",
+      "priority": "critical",
+      "dependencies": ["TASK-020", "TASK-021", "TASK-022", "TASK-023", "TASK-024", "TASK-025", "TASK-026"],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-10T20:22:08.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": ""
+    },
     "TASK-001": {
       "id": "TASK-001",
       "planId": "PLAN-001",

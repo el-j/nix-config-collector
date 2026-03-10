@@ -38,3 +38,4 @@ jobs:
         with:
           name: nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
           path: nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}
+          retention-days: 14

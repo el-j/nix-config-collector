@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/el-j/nix-config-collector/internal/adapters/cli"
@@ -73,5 +74,35 @@ func TestNotifierProgress(t *testing.T) {
 	})
 	if len(output) == 0 {
 		t.Error("expected non-empty output")
+	}
+}
+
+func TestNotifierPrintScanSummary(t *testing.T) {
+	n := cli.New()
+	output := captureStdout(func() {
+		n.PrintScanSummary([][2]string{
+			{"Packages", "42"},
+			{"Services", "7"},
+			{"Hostname", "my-mac"},
+		})
+	})
+	if len(output) == 0 {
+		t.Error("expected non-empty output")
+	}
+	if !strings.Contains(output, "Packages") {
+		t.Error("expected output to contain 'Packages'")
+	}
+	if !strings.Contains(output, "42") {
+		t.Error("expected output to contain '42'")
+	}
+}
+
+func TestNotifierPrintScanSummaryEmpty(t *testing.T) {
+	n := cli.New()
+	output := captureStdout(func() {
+		n.PrintScanSummary([][2]string{})
+	})
+	if output != "" {
+		t.Error("expected empty output for empty rows")
 	}
 }

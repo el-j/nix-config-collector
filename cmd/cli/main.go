@@ -59,6 +59,16 @@ func scanCmd() *cobra.Command {
 				return fmt.Errorf("scan failed: %w", err)
 			}
 
+			notifier.PrintScanSummary([][2]string{
+				{"Packages", fmt.Sprintf("%d", len(scan.Packages))},
+				{"Services", fmt.Sprintf("%d", len(scan.Services))},
+				{"Dotfiles", fmt.Sprintf("%d", len(scan.Dotfiles))},
+				{"Preferences", fmt.Sprintf("%d", len(scan.Preferences))},
+				{"Fonts", fmt.Sprintf("%d", len(scan.Fonts))},
+				{"Hostname", scan.Hostname},
+				{"Shell", scan.ShellConfig.Shell},
+			})
+
 			data, err := json.MarshalIndent(scan, "", "  ")
 			if err != nil {
 				return fmt.Errorf("marshaling JSON: %w", err)

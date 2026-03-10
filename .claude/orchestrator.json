@@ -5,8 +5,8 @@
     "nextTaskId": 20,
     "nextPlanId": 4
   },
-  "activePlanId": "PLAN-003",
-  "notes": "PLAN-001 archived. PLAN-002 complete. All 11 test packages pass. go build ./... pass.",
+  "activePlanId": null,
+  "notes": "PLAN-001/002 archived. PLAN-003 complete. All 11 Go test packages pass. Vue3+PrimeVue4+TailwindCSS4 frontend, MAS AppID fix, beautiful HTML docs, modern CLI, improved CI.",
   "plans": {
     "PLAN-001": {
       "id": "PLAN-001",
@@ -49,7 +49,7 @@
     "PLAN-003": {
       "id": "PLAN-003",
       "goal": "Modernize: fix MAS App Store ID TODO, replace React with Vue3+PrimeVue4+TailwindCSS4, beautiful custom HTML docs site, CI artifact downloads, enhanced CLI output.",
-      "status": "in-progress",
+      "status": "done",
       "taskIds": [
         "TASK-014",
         "TASK-015",
@@ -366,55 +366,74 @@
       "id": "TASK-014",
       "planId": "PLAN-003",
       "title": "Fix MAS App Store ID: add AppID to Package model, scanner, generator template",
-      "status": "in-progress",
+      "status": "done",
       "priority": "high",
       "dependencies": [],
       "estimatedEffort": "S",
       "createdAt": "2026-03-10T18:22:59.000Z",
       "startedAt": "2026-03-10T18:22:59.000Z",
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "Remove TODO from generator.go; capture App Store numeric ID from 'mas list' first field; use it in masApps = { \"Name\" = ID; }"
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "internal/core/models/models.go",
+        "internal/adapters/macos/scanner.go",
+        "internal/adapters/macos/scanner_mas_test.go",
+        "internal/core/generator/generator.go",
+        "internal/core/generator/generator_test.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Added AppID to Package; scanner captures it; generator emits real ID; tests verify both paths. TODO removed."
     },
     "TASK-015": {
       "id": "TASK-015",
       "planId": "PLAN-003",
       "title": "Replace React frontend with Vue3 + PrimeVue 4 + TailwindCSS 4 desktop app",
-      "status": "in-progress",
+      "status": "done",
       "priority": "critical",
       "dependencies": [],
       "estimatedEffort": "L",
       "createdAt": "2026-03-10T18:22:59.000Z",
       "startedAt": "2026-03-10T18:22:59.000Z",
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "Replace all React (JSX) files with Vue3 SFCs; use PrimeVue 4 components (DataTable, Button, ProgressBar, Accordion, Panel, Badge, Toast, Splitter); TailwindCSS 4 for layout; dark theme; step wizard Scan\u2192Preview\u2192Write; update wails.json"
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "frontend/package.json",
+        "frontend/vite.config.js",
+        "frontend/index.html",
+        "frontend/public/nix.svg",
+        "frontend/src/main.js",
+        "frontend/src/style.css",
+        "frontend/src/App.vue",
+        "wails.json"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "React deleted; Vue3+PrimeVue4+TailwindCSS4; Stepper wizard Scan\u2192Preview\u2192Write; dark Aura theme; stats dashboard."
     },
     "TASK-016": {
       "id": "TASK-016",
       "planId": "PLAN-003",
       "title": "Replace Jekyll docs with beautiful custom HTML/CSS GitHub Pages site",
-      "status": "in-progress",
+      "status": "done",
       "priority": "high",
       "dependencies": [],
       "estimatedEffort": "M",
       "createdAt": "2026-03-10T18:22:59.000Z",
       "startedAt": "2026-03-10T18:22:59.000Z",
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "Create docs/index.html standalone beautiful page; hero, download buttons (arm64/amd64/linux), features grid, how it works, architecture, footer; remove Jekyll _config.yml theme"
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "docs/index.html",
+        "docs/.nojekyll",
+        "docs/_config.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Beautiful dark-mode standalone HTML page; hero, download buttons, 3-step how-it-works, feature grid, architecture, CLI ref, CI badges."
     },
     "TASK-017": {
       "id": "TASK-017",
       "planId": "PLAN-003",
       "title": "Improve GitHub Actions: release checksums, docs workflow triggers, PR summary",
-      "status": "in-progress",
+      "status": "done",
       "priority": "medium",
       "dependencies": [
         "TASK-016"
@@ -422,33 +441,41 @@
       "estimatedEffort": "S",
       "createdAt": "2026-03-10T18:22:59.000Z",
       "startedAt": "2026-03-10T18:22:59.000Z",
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "release.yml: add sha256 checksums; update docs.yml to also trigger on releases; build.yml: add permissions block; ensure docs trigger on frontend build if needed"
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml",
+        ".github/workflows/docs.yml",
+        ".github/workflows/build.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "release.yml: SHA256 checksums, version injection. docs.yml: triggers on release+push, configure-pages@v5. build.yml: retention-days."
     },
     "TASK-018": {
       "id": "TASK-018",
       "planId": "PLAN-003",
       "title": "Enhance CLI notifier with modern progress bar and scan summary table",
-      "status": "in-progress",
+      "status": "done",
       "priority": "medium",
       "dependencies": [],
       "estimatedEffort": "S",
       "createdAt": "2026-03-10T18:22:59.000Z",
       "startedAt": "2026-03-10T18:22:59.000Z",
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "Render a \u2593\u2593\u2591\u2591 ASCII progress bar, box-drawing scan summary table at end of scan/generate; no new deps (pure stdlib + existing ANSI codes)"
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "internal/adapters/cli/notifier.go",
+        "internal/adapters/cli/notifier_test.go",
+        "cmd/cli/main.go"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "Progress bar \u2593\u2591 with \\r in-place update; box-drawing scan summary table; PrintScanSummary called in scanCmd; Confirm handles stdin error."
     },
     "TASK-019": {
       "id": "TASK-019",
       "planId": "PLAN-003",
       "title": "Final verification: build+tests pass, update orchestrator, archive PLAN-003",
-      "status": "todo",
+      "status": "done",
       "priority": "critical",
       "dependencies": [
         "TASK-014",
@@ -459,12 +486,16 @@
       ],
       "estimatedEffort": "S",
       "createdAt": "2026-03-10T18:22:59.000Z",
-      "startedAt": null,
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": ""
+      "startedAt": "2026-03-10T18:22:59.000Z",
+      "completedAt": "2026-03-10T18:22:59.000Z",
+      "filesChanged": [
+        "internal/adapters/macos/scanner_mas_test.go",
+        "internal/adapters/cli/notifier.go",
+        ".claude/orchestrator.json"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "go build ./... pass. go test -race ./...: 11/11 pass. go vet ./... pass. Code review issues fixed. PLAN-003 archived."
     }
   }
 }

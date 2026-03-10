@@ -12,7 +12,6 @@ import (
 // parseMASOutput exercises the same parsing logic as scanMASApps without
 // invoking the real `mas` binary, keeping tests OS-independent.
 func parseMASOutput(output string) []models.Package {
-	s := New()
 	var packages []models.Package
 	sc := bufio.NewScanner(strings.NewReader(output))
 	for sc.Scan() {
@@ -38,7 +37,6 @@ func parseMASOutput(output string) []models.Package {
 			Type:    models.PackageTypeMAS,
 		})
 	}
-	_ = s
 	return packages
 }
 

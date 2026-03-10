@@ -69,7 +69,10 @@ func (n *Notifier) Confirm(msg string) bool {
 		colorGray, colorReset,
 	)
 	var response string
-	fmt.Scanln(&response) //nolint:errcheck
+	if _, err := fmt.Scanln(&response); err != nil {
+		// stdin closed or unavailable: default to "no"
+		return false
+	}
 	return response == "y" || response == "Y" || response == "yes"
 }
 

@@ -1,4 +1,0 @@
-*, *::before, *::after { box-sizing: border-box; }
-body { margin: 0; background: #fafafa; }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
-pre { white-space: pre-wrap; word-break: break-word; }

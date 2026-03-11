@@ -174,8 +174,9 @@ jobs:
           if-no-files-found: error
 
   # ─────────────────────────────────────────────────────────────
-  # Build the Wails desktop app for macOS (arm64).
-  # Targets native architecture to avoid CGO cross-compilation.
+  # Build the Wails desktop app for macOS as a universal binary
+  # (arm64 + amd64) so it runs on both Apple Silicon and Intel Macs.
+  # Ad-hoc code-signing prevents macOS Gatekeeper from blocking the app.
   # ─────────────────────────────────────────────────────────────
   build-desktop:
     needs: [gitversion, test]

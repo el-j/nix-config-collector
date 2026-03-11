@@ -48,6 +48,24 @@ curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/ni
   -o /usr/local/bin/nix-config-collector && chmod +x /usr/local/bin/nix-config-collector
 ```
 
+Verify integrity with the published checksums:
+
+```bash
+curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/SHA256SUMS.txt -o SHA256SUMS.txt
+sha256sum --check --ignore-missing SHA256SUMS.txt
+```
+
+### Desktop app (macOS Apple Silicon)
+
+Download the Wails desktop GUI from the [latest release](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-arm64.zip):
+
+```bash
+curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-arm64.zip \
+  -o nix-config-collector-desktop.zip
+unzip nix-config-collector-desktop.zip
+open nix-config-collector.app
+```
+
 ### Build from source
 
 ```bash

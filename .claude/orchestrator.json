@@ -1,8 +1,8 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-10T21:26:00.000Z",
+  "updatedAt": "2026-03-11T01:45:00.000Z",
   "counters": {
-    "nextTaskId": 30,
+    "nextTaskId": 31,
     "nextPlanId": 6
   },
   "activePlanId": null,
@@ -734,6 +734,27 @@
       "buildStatus": "pass",
       "testStatus": "n/a",
       "notes": "Added build-desktop job needing validate+test. Release job now downloads both binary-* and desktop-* artifacts, includes desktop zips in SHA256SUMS and GitHub Release assets. CLI matrix also updated to use native macOS runners (macos-13/amd64, macos-latest/arm64)."
+    },
+    "TASK-030": {
+      "id": "TASK-030",
+      "title": "Fix download links: add desktop/SHA256SUMS, fix linux-arm64 in index.md, fix changelog.html link",
+      "status": "done",
+      "startedAt": "2026-03-11T01:30:00.000Z",
+      "notes": "Fixed: desktop app download button in index.html, created changelog.html (fixes broken footer link), added linux-arm64 to index.md, added SHA256SUMS links everywhere, added desktop section to README, added release-dry-run to Makefile. All URLs match release.yml artifacts exactly.",
+      "dependencies": [
+        "TASK-024",
+        "TASK-029"
+      ],
+      "filesChanged": [
+        "docs/index.html",
+        "docs/changelog.html",
+        "docs/index.md",
+        "README.md",
+        "Makefile"
+      ],
+      "completedAt": "2026-03-11T01:45:00.000Z",
+      "buildStatus": "pass",
+      "testStatus": "pass"
     }
   }
 }

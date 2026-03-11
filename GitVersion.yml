@@ -1,0 +1,16 @@
+# GitVersion 6 — GitHub Flow with Conventional Commits
+# Docs: https://gitversion.net/docs/reference/configuration
+workflow: GitHubFlow/v1
+
+tag-prefix: '[vV]?'
+
+# Conventional Commits — drive semantic version bumps from commit messages.
+# BREAKING CHANGE / feat!  → major
+# feat                     → minor
+# fix / perf / refactor    → patch
+# chore / docs / style / test / ci → no increment (maintenance)
+commit-message-incrementing: Enabled
+major-version-bump-message: '(?i)(feat|fix|refactor|perf)(\([^)]*\))?!:|^BREAKING[\s\-]CHANGE'
+minor-version-bump-message: '(?i)feat(\([^)]*\))?:'
+patch-version-bump-message: '(?i)(fix|perf|refactor)(\([^)]*\))?:'
+no-bump-message:             '(?i)(chore|docs|style|test|ci)(\([^)]*\))?:'

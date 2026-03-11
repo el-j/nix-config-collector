@@ -1,34 +1,57 @@
 name: Release
 
 on:
-  # Triggered automatically when a version tag is pushed
+  # Triggered automatically when a semver tag is pushed (e.g. v1.2.3).
   push:
     tags:
-      - 'v*'
+      - 'v[0-9]+\.[0-9]+\.[0-9]+'
 
-  # Allows manual release without leaving the GitHub UI.
-  # Provide the version as "1.2.3" (no "v" prefix); the workflow creates the tag.
+  # Allows a one-click release directly from the GitHub UI.
+  # GitVersion derives the next semantic version from commit history and
+  # Conventional Commits — no manual version input required.
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (semver without v prefix, e.g. 1.2.3)'
-        required: true
-        type: string
 
 permissions:
   contents: write
 
-# Prevent concurrent releases to avoid race conditions on the main branch
+# Prevent concurrent releases to avoid race conditions on the main branch.
 concurrency:
   group: release
   cancel-in-progress: false
 
 jobs:
   # ─────────────────────────────────────────────────────────────
+  # Derive the next semantic version automatically using
+  # GitVersion 6, driven by Conventional Commits on main.
+  # Outputs: version (e.g. 1.2.3) and tag (e.g. v1.2.3).
+  # ─────────────────────────────────────────────────────────────
+  gitversion:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gv.outputs.semVer }}
+      tag:     v${{ steps.gv.outputs.semVer }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup GitVersion
+        uses: gittools/actions/gitversion/setup@v4.3.3
+        with:
+          versionSpec: '6.x'
+
+      - name: Execute GitVersion
+        id: gv
+        uses: gittools/actions/gitversion/execute@v4.3.3
+        with:
+          useConfigFile: true
+
+  # ─────────────────────────────────────────────────────────────
   # When triggered manually, create and push the annotated tag so
   # that the rest of the pipeline can reference it uniformly.
   # ─────────────────────────────────────────────────────────────
   create-tag:
+    needs: [gitversion]
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
@@ -37,52 +60,27 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create and push tag
+      - name: Create and push annotated tag
+        env:
+          TAG:     ${{ needs.gitversion.outputs.tag }}
+          VERSION: ${{ needs.gitversion.outputs.version }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
-          git push origin "v${{ inputs.version }}"
-
-  # ─────────────────────────────────────────────────────────────
-  # Validate that the tag carries a well-formed semver string and
-  # surface it as job outputs consumed by every downstream job.
-  # ─────────────────────────────────────────────────────────────
-  validate:
-    needs: [create-tag]
-    # `create-tag` is skipped on push events; make validate run in both cases.
-    if: always() && (needs.create-tag.result == 'success' || needs.create-tag.result == 'skipped')
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.parse.outputs.version }}
-      tag:     ${{ steps.parse.outputs.tag }}
-    steps:
-      - name: Parse and validate version
-        id: parse
-        run: |
-          # Determine the raw version string
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            RAW_VERSION="${{ inputs.version }}"
-          else
-            # Strip the leading "v" from the tag name
-            RAW_VERSION="${GITHUB_REF_NAME#v}"
-          fi
-
-          # Validate strict semver (with optional pre-release and build metadata)
-          SEMVER_RE='^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?(\+[a-zA-Z0-9.]+)?$'
-          if ! echo "$RAW_VERSION" | grep -qE "$SEMVER_RE"; then
-            echo "::error::Invalid semver: '$RAW_VERSION'. Expected format: MAJOR.MINOR.PATCH[-pre-release][+build]"
-            exit 1
-          fi
-
-          echo "version=${RAW_VERSION}"   >> "$GITHUB_OUTPUT"
-          echo "tag=v${RAW_VERSION}"      >> "$GITHUB_OUTPUT"
+          git tag -a "${TAG}" -m "Release ${TAG}"
+          git push origin "${TAG}"
 
   # ─────────────────────────────────────────────────────────────
   # Gate the release on a clean test run.
+  # `create-tag` is skipped on tag-push events; the `if` guard
+  # ensures this job still runs in both trigger paths.
   # ─────────────────────────────────────────────────────────────
   test:
-    needs: [validate]
+    needs: [gitversion, create-tag]
+    if: >-
+      always() &&
+      needs.gitversion.result == 'success' &&
+      (needs.create-tag.result == 'success' || needs.create-tag.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -104,7 +102,7 @@ jobs:
   # Cross-compile CLI for all supported platforms in parallel.
   # ─────────────────────────────────────────────────────────────
   build:
-    needs: [validate, test]
+    needs: [gitversion, test]
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: true
@@ -137,7 +135,7 @@ jobs:
         run: |
           mkdir -p dist
           go build \
-            -ldflags="-s -w -X main.version=${{ needs.validate.outputs.version }}" \
+            -ldflags="-s -w -X main.version=${{ needs.gitversion.outputs.version }}" \
             -o "dist/nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}" \
             ./cmd/cli/
 
@@ -149,12 +147,11 @@ jobs:
           if-no-files-found: error
 
   # ─────────────────────────────────────────────────────────────
-  # Build the Wails desktop app for macOS (amd64 + arm64).
-  # Each run targets its native architecture to avoid CGO
-  # cross-compilation complexity.
+  # Build the Wails desktop app for macOS (arm64).
+  # Targets native architecture to avoid CGO cross-compilation.
   # ─────────────────────────────────────────────────────────────
   build-desktop:
-    needs: [validate, test]
+    needs: [gitversion, test]
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: true
@@ -182,7 +179,7 @@ jobs:
         run: |
           wails build \
             -platform ${{ matrix.platform }} \
-            -ldflags "-X main.version=${{ needs.validate.outputs.version }}"
+            -ldflags "-X main.version=${{ needs.gitversion.outputs.version }}"
 
       - name: Package app bundle
         run: |
@@ -201,7 +198,7 @@ jobs:
   # the Homebrew formula in sync.
   # ─────────────────────────────────────────────────────────────
   release:
-    needs: [validate, build, build-desktop]
+    needs: [gitversion, build, build-desktop]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -235,8 +232,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name:               ${{ needs.validate.outputs.tag }}
-          name:                   "nix-config-collector ${{ needs.validate.outputs.tag }}"
+          tag_name:               ${{ needs.gitversion.outputs.tag }}
+          name:                   "nix-config-collector ${{ needs.gitversion.outputs.tag }}"
           generate_release_notes: true
           make_latest:            true
           files: |
@@ -250,7 +247,7 @@ jobs:
       # Keep Formula/nix-config-collector.rb pointing at the new release
       - name: Update Homebrew formula
         env:
-          TAG: ${{ needs.validate.outputs.tag }}
+          TAG: ${{ needs.gitversion.outputs.tag }}
         run: |
           TARBALL_URL="https://github.com/el-j/nix-config-collector/archive/refs/tags/${TAG}.tar.gz"
 

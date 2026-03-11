@@ -1,9 +1,9 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-11T09:12:01.000Z",
+  "updatedAt": "2026-03-11T11:55:00.000Z",
   "counters": {
-    "nextTaskId": 32,
-    "nextPlanId": 7
+    "nextTaskId": 36,
+    "nextPlanId": 8
   },
   "activePlanId": null,
   "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere. PLAN-005 done: Added Wails desktop build jobs to build.yml and release.yml. Desktop artifacts (darwin/amd64 + darwin/arm64 zipped .app bundles) now produced on every CI run and included in releases. PLAN-006 done: Fixed release workflow trigger - added push:branches so releases are auto-created on main merge; idempotency guard prevents duplicate releases; skip signal cascades to all downstream jobs.",
@@ -111,6 +111,23 @@
         "TASK-031"
       ],
       "createdAt": "2026-03-11T09:12:01.000Z"
+    },
+    "PLAN-007": {
+      "id": "PLAN-007",
+      "goal": "Fix macOS desktop app: ad-hoc code signing + universal binary (arm64+amd64) so users can open the app on any Mac, and gate releases on build success.",
+      "status": "done",
+      "taskIds": [
+        "TASK-032",
+        "TASK-033",
+        "TASK-034",
+        "TASK-035"
+      ],
+      "criticalPath": [
+        "TASK-032",
+        "TASK-033",
+        "TASK-034"
+      ],
+      "createdAt": "2026-03-11T11:38:21.000Z"
     }
   },
   "tasks": {
@@ -783,6 +800,85 @@
       "testStatus": "n/a",
       "notes": "Added push:branches trigger; updated create-tag to handle branch pushes with idempotency (gh release check); updated test job condition to respect skip output; cascade skips downstream jobs when release already exists.",
       "dependencies": []
+    },
+    "TASK-032": {
+      "id": "TASK-032",
+      "planId": "PLAN-007",
+      "title": "Add universal binary build + ad-hoc code signing to build.yml",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-11T11:38:21.000Z",
+      "startedAt": "2026-03-11T11:55:00.000Z",
+      "completedAt": "2026-03-11T11:55:00.000Z",
+      "filesChanged": [
+        ".github/workflows/build.yml"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "Change darwin/arm64 to darwin/universal in build-desktop matrix; add codesign --deep --force --sign - step after wails build"
+    },
+    "TASK-033": {
+      "id": "TASK-033",
+      "planId": "PLAN-007",
+      "title": "Add universal binary build + ad-hoc code signing to release.yml",
+      "status": "done",
+      "priority": "critical",
+      "dependencies": [
+        "TASK-032"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-11T11:38:21.000Z",
+      "startedAt": "2026-03-11T11:55:00.000Z",
+      "completedAt": "2026-03-11T11:55:00.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml"
+      ],
+      "buildStatus": "pass",
+      "testStatus": "n/a",
+      "notes": "Change build-desktop matrix to darwin/universal; add codesign step; update release asset name from arm64 to universal"
+    },
+    "TASK-034": {
+      "id": "TASK-034",
+      "planId": "PLAN-007",
+      "title": "Update docs and README with macOS Gatekeeper bypass instructions",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [
+        "TASK-033"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-11T11:38:21.000Z",
+      "startedAt": "2026-03-11T11:55:00.000Z",
+      "completedAt": "2026-03-11T11:55:00.000Z",
+      "filesChanged": [
+        "docs/index.html",
+        "README.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Update docs/index.html and README.md: fix download link to universal, add first-launch Gatekeeper instructions"
+    },
+    "TASK-035": {
+      "id": "TASK-035",
+      "planId": "PLAN-007",
+      "title": "Verify builds pass and archive PLAN-007",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [
+        "TASK-032",
+        "TASK-033",
+        "TASK-034"
+      ],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-11T11:38:21.000Z",
+      "startedAt": "2026-03-11T11:55:00.000Z",
+      "completedAt": "2026-03-11T11:55:00.000Z",
+      "filesChanged": [],
+      "buildStatus": "pass",
+      "testStatus": "pass",
+      "notes": "go test -v -race ./... all pass; YAML validated; all 4 tasks complete"
     }
   }
 }

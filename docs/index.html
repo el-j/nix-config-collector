@@ -138,12 +138,12 @@
           </svg>
         </a>
 
-        <a href="https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-arm64.zip"
+        <a href="https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-universal.zip"
           class="group flex items-center gap-3 bg-purple-900/50 hover:bg-purple-800/60 text-white font-semibold px-6 py-3 rounded-xl transition-all card-hover border border-purple-700/50">
           <span class="text-xl">🖥️</span>
           <div class="text-left">
-            <div class="text-sm opacity-75">Desktop App</div>
-            <div>darwin-arm64.zip</div>
+            <div class="text-sm opacity-75">Desktop App (Universal)</div>
+            <div>darwin-universal.zip</div>
           </div>
           <svg class="w-4 h-4 opacity-75 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -154,6 +154,23 @@
           class="flex items-center gap-2 text-gray-400 hover:text-white px-4 py-3 transition-colors text-sm">
           All releases →
         </a>
+      </div>
+
+      <!-- macOS first-launch notice -->
+      <div class="max-w-xl mx-auto mb-8 bg-yellow-900/20 border border-yellow-700/40 rounded-xl p-4 text-left">
+        <div class="flex items-start gap-3">
+          <span class="text-yellow-400 text-xl flex-shrink-0">⚠️</span>
+          <div>
+            <p class="text-yellow-300 font-semibold text-sm mb-1">Opening the macOS Desktop App</p>
+            <p class="text-gray-400 text-sm mb-2">macOS Gatekeeper may block the app on first launch. To open it:</p>
+            <ol class="text-gray-400 text-sm space-y-1 list-decimal list-inside">
+              <li>Unzip the downloaded file</li>
+              <li>Right-click <code class="text-green-400">nix-config-collector.app</code> and choose <strong class="text-white">Open</strong></li>
+              <li>Click <strong class="text-white">Open</strong> in the security dialog</li>
+            </ol>
+            <p class="text-gray-500 text-xs mt-2">Or remove the quarantine attribute: <code class="text-green-400">xattr -d com.apple.quarantine nix-config-collector.app</code></p>
+          </div>
+        </div>
       </div>
 
       <!-- Quick install -->

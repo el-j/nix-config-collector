@@ -55,16 +55,19 @@ curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/SH
 sha256sum --check --ignore-missing SHA256SUMS.txt
 ```
 
-### Desktop app (macOS Apple Silicon)
+### Desktop app (macOS — Intel & Apple Silicon)
 
-Download the Wails desktop GUI from the [latest release](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-arm64.zip):
+Download the Wails desktop GUI (universal binary) from the [latest release](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-universal.zip):
 
 ```bash
-curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-arm64.zip \
+curl -L https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-universal.zip \
   -o nix-config-collector-desktop.zip
 unzip nix-config-collector-desktop.zip
+# Right-click the app and choose Open on first launch (macOS Gatekeeper)
 open nix-config-collector.app
 ```
+
+> **First launch:** macOS may show a security warning. Right-click `nix-config-collector.app` and choose **Open**, then click **Open** in the dialog. Alternatively: `xattr -d com.apple.quarantine nix-config-collector.app`
 
 ### Build from source
 

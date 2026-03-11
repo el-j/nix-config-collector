@@ -48,8 +48,8 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            platform: darwin/arm64
-            arch: arm64
+            platform: darwin/universal
+            arch: universal
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -70,6 +70,9 @@ jobs:
 
       - name: Build desktop app
         run: wails build -platform ${{ matrix.platform }}
+
+      - name: Ad-hoc sign app bundle
+        run: codesign --deep --force --verbose --sign - build/bin/nix-config-collector.app
 
       - name: Package app bundle
         run: |

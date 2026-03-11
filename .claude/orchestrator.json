@@ -1,8 +1,8 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-10T21:26:00.000Z",
+  "updatedAt": "2026-03-11T01:30:00.000Z",
   "counters": {
-    "nextTaskId": 30,
+    "nextTaskId": 31,
     "nextPlanId": 6
   },
   "activePlanId": null,
@@ -734,6 +734,18 @@
       "buildStatus": "pass",
       "testStatus": "n/a",
       "notes": "Added build-desktop job needing validate+test. Release job now downloads both binary-* and desktop-* artifacts, includes desktop zips in SHA256SUMS and GitHub Release assets. CLI matrix also updated to use native macOS runners (macos-13/amd64, macos-latest/arm64)."
+    },
+    "TASK-030": {
+      "id": "TASK-030",
+      "title": "Fix download links: add desktop/SHA256SUMS, fix linux-arm64 in index.md, fix changelog.html link",
+      "status": "in-progress",
+      "startedAt": "2026-03-11T01:30:00.000Z",
+      "notes": "Fix: 1) changelog.html broken link in footer (create changelog.html), 2) missing linux-arm64 in docs/index.md, 3) missing desktop download links in all docs, 4) missing SHA256SUMS.txt reference, 5) add release-dry-run to Makefile",
+      "dependencies": [
+        "TASK-024",
+        "TASK-029"
+      ],
+      "filesChanged": []
     }
   }
 }

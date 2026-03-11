@@ -185,8 +185,8 @@ jobs:
       matrix:
         include:
           - runner: macos-latest
-            platform: darwin/arm64
-            arch: arm64
+            platform: darwin/universal
+            arch: universal
     steps:
       - uses: actions/checkout@v4
 
@@ -207,6 +207,9 @@ jobs:
           wails build \
             -platform ${{ matrix.platform }} \
             -ldflags "-X main.version=${{ needs.gitversion.outputs.version }}"
+
+      - name: Ad-hoc sign app bundle
+        run: codesign --deep --force --verbose --sign - build/bin/nix-config-collector.app
 
       - name: Package app bundle
         run: |
@@ -268,7 +271,7 @@ jobs:
             dist/nix-config-collector-linux-arm64
             dist/nix-config-collector-darwin-amd64
             dist/nix-config-collector-darwin-arm64
-            dist/nix-config-collector-desktop-darwin-arm64.zip
+            dist/nix-config-collector-desktop-darwin-universal.zip
             dist/SHA256SUMS.txt
 
       # Keep Formula/nix-config-collector.rb pointing at the new release

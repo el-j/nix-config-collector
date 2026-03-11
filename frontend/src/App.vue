@@ -7,11 +7,17 @@ import Panel from 'primevue/panel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
-import TabView from 'primevue/tabview'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import Toast from 'primevue/toast'
 import Stepper from 'primevue/stepper'
-import StepperPanel from 'primevue/stepperpanel'
+import StepList from 'primevue/steplist'
+import Step from 'primevue/step'
+import StepPanels from 'primevue/steppanels'
+import StepPanel from 'primevue/steppanel'
 import Textarea from 'primevue/textarea'
 import InputText from 'primevue/inputtext'
 import Divider from 'primevue/divider'
@@ -33,6 +39,12 @@ const packages = computed(() => scanData.value?.packages ?? [])
 const services = computed(() => (scanData.value?.services ?? []).filter(s => s.enabled))
 const fonts = computed(() => scanData.value?.fonts ?? [])
 const dotfiles = computed(() => scanData.value?.dotfiles ?? [])
+
+const nixTabs = computed(() => nixConfig.value ? [
+  { key: 'darwin', label: 'darwin-configuration.nix', content: nixConfig.value.DarwinConfig },
+  { key: 'home', label: 'home.nix', content: nixConfig.value.HomeConfig },
+  { key: 'flake', label: 'flake.nix', content: nixConfig.value.FlakeConfig },
+] : [])
 
 const packageTagSeverity = (type) => {
   switch (type) {
@@ -113,32 +125,45 @@ async function doWrite() {
 
     <!-- Main content -->
     <main class="flex-1 overflow-auto p-6">
-      <Stepper :value="activeStep" class="mb-6">
-        <StepperPanel :value="0">
-          <template #header="{ value, activateCallback }">
-            <button @click="activateCallback" class="flex items-center gap-2 px-3 py-1.5">
-              <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
-                :class="value <= activeStep ? 'bg-blue-500 text-white' : 'bg-zinc-700 text-zinc-400'">1</span>
-              <span :class="value <= activeStep ? 'text-white' : 'text-zinc-400'" class="font-medium">Scan</span>
-            </button>
-          </template>
-          <template #content>
+      <Stepper v-model:value="activeStep" class="mb-6">
+        <StepList>
+          <Step :value="0">
+            <template #default="{ activateCallback }">
+              <button @click="activateCallback" class="flex items-center gap-2 px-3 py-1.5">
+                <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
+                  :class="0 <= activeStep ? 'bg-blue-500 text-white' : 'bg-zinc-700 text-zinc-400'">1</span>
+                <span :class="0 <= activeStep ? 'text-white' : 'text-zinc-400'" class="font-medium">Scan</span>
+              </button>
+            </template>
+          </Step>
+          <Step :value="1">
+            <template #default="{ activateCallback }">
+              <button @click="activateCallback" :disabled="!scanData" class="flex items-center gap-2 px-3 py-1.5">
+                <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
+                  :class="1 <= activeStep ? 'bg-blue-500 text-white' : 'bg-zinc-700 text-zinc-400'">2</span>
+                <span :class="1 <= activeStep ? 'text-white' : 'text-zinc-400'" class="font-medium">Preview</span>
+              </button>
+            </template>
+          </Step>
+          <Step :value="2">
+            <template #default="{ activateCallback }">
+              <button @click="activateCallback" :disabled="!nixConfig" class="flex items-center gap-2 px-3 py-1.5">
+                <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
+                  :class="2 <= activeStep ? 'bg-blue-500 text-white' : 'bg-zinc-700 text-zinc-400'">3</span>
+                <span :class="2 <= activeStep ? 'text-white' : 'text-zinc-400'" class="font-medium">Write</span>
+              </button>
+            </template>
+          </Step>
+        </StepList>
+        <StepPanels>
+          <StepPanel :value="0">
             <div class="py-4 space-y-4">
               <p class="text-zinc-400">Scan your macOS system for installed packages, services, dotfiles, and preferences.</p>
               <Button @click="doScan" icon="pi pi-search" label="Scan System" :loading="loading" severity="primary" size="large" />
             </div>
-          </template>
-        </StepperPanel>
+          </StepPanel>
 
-        <StepperPanel :value="1">
-          <template #header="{ value, activateCallback }">
-            <button @click="activateCallback" :disabled="!scanData" class="flex items-center gap-2 px-3 py-1.5">
-              <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
-                :class="value <= activeStep ? 'bg-blue-500 text-white' : 'bg-zinc-700 text-zinc-400'">2</span>
-              <span :class="value <= activeStep ? 'text-white' : 'text-zinc-400'" class="font-medium">Preview</span>
-            </button>
-          </template>
-          <template #content>
+          <StepPanel :value="1">
             <div class="py-4 space-y-4">
               <!-- Scan summary -->
               <div v-if="scanData" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -175,29 +200,21 @@ async function doWrite() {
               <Button @click="doPreview" icon="pi pi-eye" label="Generate Preview" :loading="loading"
                 :disabled="!scanData" severity="success" size="large" />
             </div>
-          </template>
-        </StepperPanel>
+          </StepPanel>
 
-        <StepperPanel :value="2">
-          <template #header="{ value, activateCallback }">
-            <button @click="activateCallback" :disabled="!nixConfig" class="flex items-center gap-2 px-3 py-1.5">
-              <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold"
-                :class="value <= activeStep ? 'bg-blue-500 text-white' : 'bg-zinc-700 text-zinc-400'">3</span>
-              <span :class="value <= activeStep ? 'text-white' : 'text-zinc-400'" class="font-medium">Write</span>
-            </button>
-          </template>
-          <template #content>
+          <StepPanel :value="2">
             <div class="py-4 space-y-4">
               <!-- Config preview tabs -->
-              <TabView v-if="nixConfig">
-                <TabPanel v-for="tab in [
-                  { key: 'darwin', label: 'darwin-configuration.nix', content: nixConfig.DarwinConfig },
-                  { key: 'home', label: 'home.nix', content: nixConfig.HomeConfig },
-                  { key: 'flake', label: 'flake.nix', content: nixConfig.FlakeConfig },
-                ]" :key="tab.key" :header="tab.label">
-                  <pre class="code-block bg-zinc-900 rounded-lg p-4 overflow-auto max-h-64 text-green-300 text-xs">{{ tab.content }}</pre>
-                </TabPanel>
-              </TabView>
+              <Tabs v-if="nixConfig" :value="nixTabs[0]?.key">
+                <TabList>
+                  <Tab v-for="tab in nixTabs" :key="tab.key" :value="tab.key">{{ tab.label }}</Tab>
+                </TabList>
+                <TabPanels>
+                  <TabPanel v-for="tab in nixTabs" :key="tab.key" :value="tab.key">
+                    <pre class="code-block bg-zinc-900 rounded-lg p-4 overflow-auto max-h-64 text-green-300 text-xs">{{ tab.content }}</pre>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
 
               <Divider />
 
@@ -216,8 +233,8 @@ async function doWrite() {
                 </code>
               </p>
             </div>
-          </template>
-        </StepperPanel>
+          </StepPanel>
+        </StepPanels>
       </Stepper>
     </main>
 

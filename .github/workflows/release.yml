@@ -101,7 +101,7 @@ jobs:
         run: go test -v -race ./...
 
   # ─────────────────────────────────────────────────────────────
-  # Cross-compile for all supported platforms in parallel.
+  # Cross-compile CLI for all supported platforms in parallel.
   # ─────────────────────────────────────────────────────────────
   build:
     needs: [validate, test]
@@ -116,7 +116,7 @@ jobs:
           - runner: ubuntu-latest
             goos: linux
             goarch: arm64
-          - runner: macos-latest
+          - runner: ubuntu-latest
             goos: darwin
             goarch: amd64
           - runner: macos-latest
@@ -130,7 +130,7 @@ jobs:
           go-version: '1.24'
           cache: true
 
-      - name: Build binary
+      - name: Build CLI binary
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -141,7 +141,7 @@ jobs:
             -o "dist/nix-config-collector-${{ matrix.goos }}-${{ matrix.goarch }}" \
             ./cmd/cli/
 
-      - name: Upload binary artifact
+      - name: Upload CLI binary artifact
         uses: actions/upload-artifact@v4
         with:
           name: binary-${{ matrix.goos }}-${{ matrix.goarch }}
@@ -149,11 +149,59 @@ jobs:
           if-no-files-found: error
 
   # ─────────────────────────────────────────────────────────────
-  # Collect binaries, publish the GitHub Release, and keep the
-  # Homebrew formula in sync.
+  # Build the Wails desktop app for macOS (amd64 + arm64).
+  # Each run targets its native architecture to avoid CGO
+  # cross-compilation complexity.
+  # ─────────────────────────────────────────────────────────────
+  build-desktop:
+    needs: [validate, test]
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - runner: macos-latest
+            platform: darwin/arm64
+            arch: arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.11.0
+
+      - name: Build desktop app
+        run: |
+          wails build \
+            -platform ${{ matrix.platform }} \
+            -ldflags "-X main.version=${{ needs.validate.outputs.version }}"
+
+      - name: Package app bundle
+        run: |
+          cd build/bin
+          zip -r "../../nix-config-collector-desktop-darwin-${{ matrix.arch }}.zip" "nix-config-collector.app"
+
+      - name: Upload desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-darwin-${{ matrix.arch }}
+          path: nix-config-collector-desktop-darwin-${{ matrix.arch }}.zip
+          if-no-files-found: error
+
+  # ─────────────────────────────────────────────────────────────
+  # Collect all artifacts, publish the GitHub Release, and keep
+  # the Homebrew formula in sync.
   # ─────────────────────────────────────────────────────────────
   release:
-    needs: [validate, build]
+    needs: [validate, build, build-desktop]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -163,15 +211,23 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Collect every binary into dist/
-      - name: Download all binaries
+      # Collect every CLI binary into dist/
+      - name: Download CLI binaries
         uses: actions/download-artifact@v4
         with:
           pattern: binary-*
           merge-multiple: true
           path: dist/
 
-      # Generate a single checksums file covering all binaries
+      # Collect every desktop bundle into dist/
+      - name: Download desktop bundles
+        uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          merge-multiple: true
+          path: dist/
+
+      # Generate a single checksums file covering all release assets
       - name: Generate SHA256 checksums
         run: cd dist && sha256sum * > SHA256SUMS.txt
 
@@ -188,6 +244,7 @@ jobs:
             dist/nix-config-collector-linux-arm64
             dist/nix-config-collector-darwin-amd64
             dist/nix-config-collector-darwin-arm64
+            dist/nix-config-collector-desktop-darwin-arm64.zip
             dist/SHA256SUMS.txt
 
       # Keep Formula/nix-config-collector.rb pointing at the new release

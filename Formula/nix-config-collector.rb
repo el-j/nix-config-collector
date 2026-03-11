@@ -4,8 +4,8 @@
 class NixConfigCollector < Formula
   desc "Collect macOS setup and generate nix-darwin + home-manager configuration"
   homepage "https://el-j.github.io/nix-config-collector"
-  url "https://github.com/el-j/nix-config-collector/archive/refs/tags/v0.1.0-45.tar.gz"
-  sha256 "8846bd3bc7b3701767cba99023af04138b2e6c7a142d5f99511204ad480180cd"
+  url "https://github.com/el-j/nix-config-collector/archive/refs/tags/v0.1.0-53.tar.gz"
+  sha256 "a243229a121e52ac80d57230ba10ae1a6d9a6f77cd4edd6173236cc55e8fe58f"
   license "MIT"
   head "https://github.com/el-j/nix-config-collector.git", branch: "main"
 

@@ -1,12 +1,12 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-11T01:45:00.000Z",
+  "updatedAt": "2026-03-11T09:12:01.000Z",
   "counters": {
-    "nextTaskId": 31,
-    "nextPlanId": 6
+    "nextTaskId": 32,
+    "nextPlanId": 7
   },
   "activePlanId": null,
-  "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere. PLAN-005 done: Added Wails desktop build jobs to build.yml and release.yml. Desktop artifacts (darwin/amd64 + darwin/arm64 zipped .app bundles) now produced on every CI run and included in releases.",
+  "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere. PLAN-005 done: Added Wails desktop build jobs to build.yml and release.yml. Desktop artifacts (darwin/amd64 + darwin/arm64 zipped .app bundles) now produced on every CI run and included in releases. PLAN-006 done: Fixed release workflow trigger - added push:branches so releases are auto-created on main merge; idempotency guard prevents duplicate releases; skip signal cascades to all downstream jobs.",
   "plans": {
     "PLAN-001": {
       "id": "PLAN-001",
@@ -99,6 +99,18 @@
         "TASK-029"
       ],
       "createdAt": "2026-03-10T21:23:00.000Z"
+    },
+    "PLAN-006": {
+      "id": "PLAN-006",
+      "goal": "Fix release workflow: add auto-trigger on main push, idempotency guard, propagate skip signal; releases should be created automatically with GitVersion semver.",
+      "status": "done",
+      "taskIds": [
+        "TASK-031"
+      ],
+      "criticalPath": [
+        "TASK-031"
+      ],
+      "createdAt": "2026-03-11T09:12:01.000Z"
     }
   },
   "tasks": {
@@ -755,6 +767,22 @@
       "completedAt": "2026-03-11T01:45:00.000Z",
       "buildStatus": "pass",
       "testStatus": "pass"
+    },
+    "TASK-031": {
+      "id": "TASK-031",
+      "planId": "PLAN-006",
+      "title": "Fix release workflow to auto-trigger and be idempotent",
+      "status": "done",
+      "priority": "critical",
+      "startedAt": "2026-03-11T09:12:01.000Z",
+      "completedAt": "2026-03-11T09:12:01.000Z",
+      "filesChanged": [
+        ".github/workflows/release.yml"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Added push:branches trigger; updated create-tag to handle branch pushes with idempotency (gh release check); updated test job condition to respect skip output; cascade skips downstream jobs when release already exists.",
+      "dependencies": []
     }
   }
 }

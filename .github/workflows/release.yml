@@ -1,8 +1,12 @@
 name: Release
 
 on:
-  # Triggered automatically when a semver tag is pushed (e.g. v1.2.3).
+  # Triggered automatically on every merge/push to main — GitVersion
+  # computes the next semantic version and a new release is created only
+  # when the computed tag does not already exist (idempotent).
   push:
+    branches: [main, master]
+    # Also triggered when a semver tag is pushed directly (e.g. hotfix).
     tags:
       - 'v[0-9]+\.[0-9]+\.[0-9]+'
 
@@ -47,23 +51,44 @@ jobs:
           useConfigFile: true
 
   # ─────────────────────────────────────────────────────────────
-  # When triggered manually, create and push the annotated tag so
-  # that the rest of the pipeline can reference it uniformly.
+  # For branch-push and manual-dispatch triggers: check whether the
+  # computed release tag already exists, then create it if not.
+  # Outputs `skip=true` when the release already exists so all
+  # downstream jobs are bypassed idempotently (e.g. the chore commit
+  # from the Homebrew formula update won't re-trigger a duplicate release).
+  # Skipped entirely on direct tag-push triggers (tag already exists).
   # ─────────────────────────────────────────────────────────────
   create-tag:
     needs: [gitversion]
-    if: github.event_name == 'workflow_dispatch'
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/'))
     runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create and push annotated tag
+      - name: Check if release already exists
+        id: check
         env:
-          TAG:     ${{ needs.gitversion.outputs.tag }}
-          VERSION: ${{ needs.gitversion.outputs.version }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.gitversion.outputs.tag }}
+        run: |
+          if gh release view "${TAG}" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release ${TAG} already exists – skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create and push annotated tag
+        if: steps.check.outputs.skip == 'false'
+        env:
+          TAG: ${{ needs.gitversion.outputs.tag }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -74,13 +99,15 @@ jobs:
   # Gate the release on a clean test run.
   # `create-tag` is skipped on tag-push events; the `if` guard
   # ensures this job still runs in both trigger paths.
+  # Skipped when `create-tag` reports the release already exists.
   # ─────────────────────────────────────────────────────────────
   test:
     needs: [gitversion, create-tag]
     if: >-
       always() &&
       needs.gitversion.result == 'success' &&
-      (needs.create-tag.result == 'success' || needs.create-tag.result == 'skipped')
+      (needs.create-tag.result == 'skipped' ||
+      (needs.create-tag.result == 'success' && needs.create-tag.outputs.skip != 'true'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

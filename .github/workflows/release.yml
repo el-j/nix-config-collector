@@ -116,7 +116,7 @@ jobs:
           - runner: ubuntu-latest
             goos: linux
             goarch: arm64
-          - runner: macos-13
+          - runner: ubuntu-latest
             goos: darwin
             goarch: amd64
           - runner: macos-latest
@@ -160,9 +160,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - runner: macos-13
-            platform: darwin/amd64
-            arch: amd64
           - runner: macos-latest
             platform: darwin/arm64
             arch: arm64
@@ -247,7 +244,6 @@ jobs:
             dist/nix-config-collector-linux-arm64
             dist/nix-config-collector-darwin-amd64
             dist/nix-config-collector-darwin-arm64
-            dist/nix-config-collector-desktop-darwin-amd64.zip
             dist/nix-config-collector-desktop-darwin-arm64.zip
             dist/SHA256SUMS.txt
 

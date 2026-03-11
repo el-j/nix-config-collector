@@ -16,7 +16,7 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: arm64
-          - os: macos-13
+          - os: ubuntu-latest
             goos: darwin
             goarch: amd64
           - os: macos-latest
@@ -47,9 +47,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-13
-            platform: darwin/amd64
-            arch: amd64
           - os: macos-latest
             platform: darwin/arm64
             arch: arm64

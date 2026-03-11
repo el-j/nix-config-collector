@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="nix-config-collector changelog" />
+  <title>Changelog — nix-config-collector</title>
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'monospace'],
+          },
+          colors: {
+            nix: {
+              50: '#f0f9ff',
+              500: '#5277C3',
+              600: '#4267b3',
+              700: '#3557a0',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #5277C3 0%, #7EC8E3 50%, #5277C3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-bold text-white text-lg">
+        <span class="text-2xl">❄️</span> nix-config-collector
+      </a>
+      <div class="hidden md:flex items-center gap-6 text-sm text-gray-400">
+        <a href="index.html#install" class="hover:text-white transition-colors">Install</a>
+        <a href="index.html#how-it-works" class="hover:text-white transition-colors">How it works</a>
+        <a href="https://github.com/el-j/nix-config-collector" target="_blank"
+          class="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-lg transition-colors">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <main class="pt-24 pb-16">
+    <div class="max-w-3xl mx-auto px-6">
+
+      <h1 class="text-4xl font-extrabold mb-2">
+        <span class="gradient-text">Changelog</span>
+      </h1>
+      <p class="text-gray-400 mb-10 text-sm">
+        All notable changes to nix-config-collector are documented here.<br/>
+        Format follows <a href="https://keepachangelog.com/en/1.0.0/" class="text-blue-400 hover:text-blue-300 transition-colors" target="_blank">Keep a Changelog</a>.
+      </p>
+
+      <!-- Unreleased -->
+      <section class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="bg-yellow-900/50 border border-yellow-700/50 text-yellow-300 text-xs font-semibold px-3 py-1 rounded-full">Unreleased</span>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Added</h3>
+          <ul class="space-y-2 text-gray-300 text-sm">
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">pkg/config/</code> embedded Nix config templates with <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">go:embed</code></li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">internal/adapters/git/</code> adapter for auto-committing generated configs</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">internal/adapters/ai/</code> Claude Sonnet AI adapter for package suggestions and config review</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">internal/adapters/macos/</code> unit tests covering all scanner methods</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">internal/core/app/</code> integration tests with mock adapters</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Wails 2 desktop app scaffold (<code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">cmd/wails/</code>, <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">frontend/</code>)</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">apply</code> CLI command with <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">--dry-run</code> flag</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">.gitignore</code> file</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Homebrew tap formula</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Enriched GitHub Pages documentation site</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- v0.1.0 -->
+      <section class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+          <a href="https://github.com/el-j/nix-config-collector/releases/tag/v0.1.0"
+            class="bg-blue-900/50 border border-blue-700/50 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full hover:bg-blue-800/60 transition-colors">
+            v0.1.0
+          </a>
+          <span class="text-gray-500 text-sm">2026-03-10</span>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Added</h3>
+          <ul class="space-y-2 text-gray-300 text-sm">
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Initial release</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Core domain models (Package, Service, Dotfile, SystemPreference, Font, SystemScan, NixConfig)</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Ports (interfaces) for all external interactions</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Homebrew → nixpkgs mapping engine (60+ mappings)</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> Nix config generator (darwin-configuration.nix, home.nix, flake.nix)</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> macOS system scanner: <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">brew list</code>, <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">mas list</code>, <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">launchctl list</code>, <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">defaults read</code></li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> CLI commands: <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">scan</code>, <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">generate</code>, <code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">version</code></li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> GitHub Actions: test, build (multi-platform), release, docs</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> GitHub Pages documentation site</li>
+            <li class="flex items-start gap-2"><span class="text-green-400 mt-0.5">+</span> JSON-based Claude orchestration system (<code class="font-mono text-xs bg-gray-800 px-1.5 py-0.5 rounded">.claude/orchestrator.json</code>)</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="text-xl">❄️</span>
+        <span class="font-semibold">nix-config-collector</span>
+        <span class="text-gray-600">·</span>
+        <span class="text-sm">MIT License</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-gray-400">
+        <a href="https://github.com/el-j/nix-config-collector" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://github.com/el-j/nix-config-collector/releases" class="hover:text-white transition-colors">Releases</a>
+        <a href="changelog.html" class="hover:text-white transition-colors">Changelog</a>
+        <a href="https://github.com/el-j/nix-config-collector/issues" class="hover:text-white transition-colors">Issues</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.documentElement.classList.add('dark');
+  </script>
+</body>
+</html>

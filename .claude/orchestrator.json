@@ -1,6 +1,6 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-11T01:30:00.000Z",
+  "updatedAt": "2026-03-11T01:45:00.000Z",
   "counters": {
     "nextTaskId": 31,
     "nextPlanId": 6
@@ -738,14 +738,23 @@
     "TASK-030": {
       "id": "TASK-030",
       "title": "Fix download links: add desktop/SHA256SUMS, fix linux-arm64 in index.md, fix changelog.html link",
-      "status": "in-progress",
+      "status": "done",
       "startedAt": "2026-03-11T01:30:00.000Z",
-      "notes": "Fix: 1) changelog.html broken link in footer (create changelog.html), 2) missing linux-arm64 in docs/index.md, 3) missing desktop download links in all docs, 4) missing SHA256SUMS.txt reference, 5) add release-dry-run to Makefile",
+      "notes": "Fixed: desktop app download button in index.html, created changelog.html (fixes broken footer link), added linux-arm64 to index.md, added SHA256SUMS links everywhere, added desktop section to README, added release-dry-run to Makefile. All URLs match release.yml artifacts exactly.",
       "dependencies": [
         "TASK-024",
         "TASK-029"
       ],
-      "filesChanged": []
+      "filesChanged": [
+        "docs/index.html",
+        "docs/changelog.html",
+        "docs/index.md",
+        "README.md",
+        "Makefile"
+      ],
+      "completedAt": "2026-03-11T01:45:00.000Z",
+      "buildStatus": "pass",
+      "testStatus": "pass"
     }
   }
 }

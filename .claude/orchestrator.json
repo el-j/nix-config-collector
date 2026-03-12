@@ -1,6 +1,6 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-12T10:35:13.000Z",
+  "updatedAt": "2026-03-12T10:37:00.000Z",
   "counters": {
     "nextTaskId": 39,
     "nextPlanId": 9
@@ -132,7 +132,7 @@
     "PLAN-008": {
       "id": "PLAN-008",
       "goal": "Fix desktop app release naming mismatch so darwin-arm64 links resolve correctly",
-      "status": "in-progress",
+      "status": "done",
       "taskIds": [
         "TASK-036",
         "TASK-037",
@@ -900,51 +900,56 @@
       "id": "TASK-036",
       "planId": "PLAN-008",
       "title": "Fix docs/index.md desktop download link from arm64 to universal",
-      "status": "todo",
+      "status": "done",
       "priority": "critical",
       "dependencies": [],
       "estimatedEffort": "XS",
       "createdAt": "2026-03-12T10:35:13.000Z",
-      "startedAt": null,
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "docs/index.md line 41 references nix-config-collector-desktop-darwin-arm64.zip but release.yml produces nix-config-collector-desktop-darwin-universal.zip"
+      "startedAt": "2026-03-12T10:36:00.000Z",
+      "completedAt": "2026-03-12T10:37:00.000Z",
+      "filesChanged": [
+        "docs/index.md"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Fixed: changed arm64.zip to universal.zip and updated description to Universal — Apple Silicon + Intel"
     },
     "TASK-037": {
       "id": "TASK-037",
       "planId": "PLAN-008",
       "title": "Fix Makefile build-wails target to use darwin/universal instead of darwin/arm64",
-      "status": "todo",
+      "status": "done",
       "priority": "high",
       "dependencies": [],
       "estimatedEffort": "XS",
       "createdAt": "2026-03-12T10:35:13.000Z",
-      "startedAt": null,
-      "completedAt": null,
-      "filesChanged": [],
-      "buildStatus": null,
-      "testStatus": null,
-      "notes": "Makefile build-wails uses darwin/arm64 but CI uses darwin/universal - inconsistency"
+      "startedAt": "2026-03-12T10:36:00.000Z",
+      "completedAt": "2026-03-12T10:37:00.000Z",
+      "filesChanged": [
+        "Makefile"
+      ],
+      "buildStatus": "n/a",
+      "testStatus": "n/a",
+      "notes": "Fixed: changed wails build -platform darwin/arm64 to darwin/universal to match CI"
     },
     "TASK-038": {
       "id": "TASK-038",
       "planId": "PLAN-008",
       "title": "Add darwin/arm64 as additional desktop build target in release.yml",
-      "status": "todo",
+      "status": "deferred",
       "priority": "high",
       "dependencies": [
         "TASK-036"
       ],
       "estimatedEffort": "S",
       "createdAt": "2026-03-12T10:35:13.000Z",
-      "startedAt": null,
+      "startedAt": "2026-03-12T10:36:00.000Z",
       "completedAt": null,
       "filesChanged": [],
       "buildStatus": null,
       "testStatus": null,
-      "notes": "Add arm64-specific build in addition to universal so both download links can work"
+      "notes": "Add arm64-specific build in addition to universal so both download links can work",
+      "deferralReason": "Not needed: a darwin/universal binary already includes both arm64 and amd64 architectures natively. The user-facing issue is resolved by correcting the docs link (TASK-036). Adding a redundant arm64-only build would double CI time without benefit."
     }
   }
 }

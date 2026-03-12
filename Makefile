@@ -7,9 +7,9 @@ VERSION ?= dev
 build:
 	go build -ldflags="-s -w -X main.version=$(VERSION)" -o bin/nix-config-collector ./cmd/cli/
 
-# Build Wails desktop app (requires Wails CLI and macOS)
+# Build Wails desktop app as a universal binary (requires Wails CLI and macOS)
 build-wails:
-	wails build -platform darwin/arm64
+	wails build -platform darwin/universal
 
 # Run all tests
 test:

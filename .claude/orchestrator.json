@@ -1,11 +1,11 @@
 {
   "version": "2",
-  "updatedAt": "2026-03-11T11:55:00.000Z",
+  "updatedAt": "2026-03-12T10:35:13.000Z",
   "counters": {
-    "nextTaskId": 36,
-    "nextPlanId": 8
+    "nextTaskId": 39,
+    "nextPlanId": 9
   },
-  "activePlanId": null,
+  "activePlanId": "PLAN-008",
   "notes": "PLAN-001/002/003 archived. PLAN-004 done. Bulletproof semver release CI/CD: gated release, semver validation, 4-platform matrix, Homebrew auto-update, workflow_dispatch, macOS tests, linux-arm64 everywhere. PLAN-005 done: Added Wails desktop build jobs to build.yml and release.yml. Desktop artifacts (darwin/amd64 + darwin/arm64 zipped .app bundles) now produced on every CI run and included in releases. PLAN-006 done: Fixed release workflow trigger - added push:branches so releases are auto-created on main merge; idempotency guard prevents duplicate releases; skip signal cascades to all downstream jobs.",
   "plans": {
     "PLAN-001": {
@@ -128,6 +128,22 @@
         "TASK-034"
       ],
       "createdAt": "2026-03-11T11:38:21.000Z"
+    },
+    "PLAN-008": {
+      "id": "PLAN-008",
+      "goal": "Fix desktop app release naming mismatch so darwin-arm64 links resolve correctly",
+      "status": "in-progress",
+      "taskIds": [
+        "TASK-036",
+        "TASK-037",
+        "TASK-038"
+      ],
+      "criticalPath": [
+        "TASK-036",
+        "TASK-037",
+        "TASK-038"
+      ],
+      "createdAt": "2026-03-12T10:35:13.000Z"
     }
   },
   "tasks": {
@@ -560,7 +576,7 @@
       ],
       "buildStatus": "n/a",
       "testStatus": "n/a",
-      "notes": "Standard Homebrew formula. SHA256 placeholder \u2014 update at release time."
+      "notes": "Standard Homebrew formula. SHA256 placeholder — update at release time."
     },
     "TASK-013": {
       "id": "TASK-013",
@@ -636,7 +652,7 @@
       ],
       "buildStatus": "pass",
       "testStatus": "n/a",
-      "notes": "React deleted; Vue3+PrimeVue4+TailwindCSS4; Stepper wizard Scan\u2192Preview\u2192Write; dark Aura theme; stats dashboard."
+      "notes": "React deleted; Vue3+PrimeVue4+TailwindCSS4; Stepper wizard Scan→Preview→Write; dark Aura theme; stats dashboard."
     },
     "TASK-016": {
       "id": "TASK-016",
@@ -698,7 +714,7 @@
       ],
       "buildStatus": "pass",
       "testStatus": "pass",
-      "notes": "Progress bar \u2593\u2591 with \\r in-place update; box-drawing scan summary table; PrintScanSummary called in scanCmd; Confirm handles stdin error."
+      "notes": "Progress bar ▓░ with \\r in-place update; box-drawing scan summary table; PrintScanSummary called in scanCmd; Confirm handles stdin error."
     },
     "TASK-019": {
       "id": "TASK-019",
@@ -879,6 +895,56 @@
       "buildStatus": "pass",
       "testStatus": "pass",
       "notes": "go test -v -race ./... all pass; YAML validated; all 4 tasks complete"
+    },
+    "TASK-036": {
+      "id": "TASK-036",
+      "planId": "PLAN-008",
+      "title": "Fix docs/index.md desktop download link from arm64 to universal",
+      "status": "todo",
+      "priority": "critical",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-12T10:35:13.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": "docs/index.md line 41 references nix-config-collector-desktop-darwin-arm64.zip but release.yml produces nix-config-collector-desktop-darwin-universal.zip"
+    },
+    "TASK-037": {
+      "id": "TASK-037",
+      "planId": "PLAN-008",
+      "title": "Fix Makefile build-wails target to use darwin/universal instead of darwin/arm64",
+      "status": "todo",
+      "priority": "high",
+      "dependencies": [],
+      "estimatedEffort": "XS",
+      "createdAt": "2026-03-12T10:35:13.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": "Makefile build-wails uses darwin/arm64 but CI uses darwin/universal - inconsistency"
+    },
+    "TASK-038": {
+      "id": "TASK-038",
+      "planId": "PLAN-008",
+      "title": "Add darwin/arm64 as additional desktop build target in release.yml",
+      "status": "todo",
+      "priority": "high",
+      "dependencies": [
+        "TASK-036"
+      ],
+      "estimatedEffort": "S",
+      "createdAt": "2026-03-12T10:35:13.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "filesChanged": [],
+      "buildStatus": null,
+      "testStatus": null,
+      "notes": "Add arm64-specific build in addition to universal so both download links can work"
     }
   }
 }

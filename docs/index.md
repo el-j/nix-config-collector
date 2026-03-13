@@ -38,7 +38,7 @@ Download the latest release for your architecture:
 | macOS (Intel) | [nix-config-collector-darwin-amd64](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-darwin-amd64) |
 | Linux (amd64) | [nix-config-collector-linux-amd64](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-linux-amd64) |
 | Linux (arm64) | [nix-config-collector-linux-arm64](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-linux-arm64) |
-| macOS Desktop App (Apple Silicon) | [nix-config-collector-desktop-darwin-arm64.zip](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-arm64.zip) |
+| macOS Desktop App (Universal — Apple Silicon + Intel) | [nix-config-collector-desktop-darwin-universal.zip](https://github.com/el-j/nix-config-collector/releases/latest/download/nix-config-collector-desktop-darwin-universal.zip) |
 | Checksums | [SHA256SUMS.txt](https://github.com/el-j/nix-config-collector/releases/latest/download/SHA256SUMS.txt) |
 
 ```bash
